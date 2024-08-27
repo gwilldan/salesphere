@@ -13,18 +13,19 @@ export const metadata = {
 export default function RootLayout({ children }) {
 	return (
 		<html lang="en">
-			<Web3Providers>
-				<body
-					className={`${inter.className} bg-slate-800 text-white h-dvh w-dvw overflow-hidden md:flex`}
-				>
+			<body
+				className={`${inter.className} bg-slate-800 text-white h-dvh w-dvw md:flex`}
+			>
+				<Web3Providers>
 					<SideBar />
-					<main className="w-full">
+					<main className="w-full h-full flex flex-col">
 						<Nav />
-
-						{children}
+						<div className=" flex-1 overflow-y-auto pb-10 px-4 pt-[30px]">
+							{children}
+						</div>
 					</main>
-				</body>
-			</Web3Providers>
+				</Web3Providers>
+			</body>
 		</html>
 	);
 }
