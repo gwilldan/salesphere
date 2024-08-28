@@ -38,7 +38,7 @@ const suiteCards = [
 	{
 		title: "Private Sale",
 		description:
-			"Allows you to manage a highly confidential token sale among your chosen participants.",
+			"Create and manage a highly confidential token sale among your chosen participants.",
 	},
 	{
 		title: "Pubic Sale",

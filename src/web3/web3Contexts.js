@@ -53,10 +53,10 @@ const Web3Contexts = ({ children }) => {
 				{
 					onError: (err) => {
 						console.log("Error:", err);
-						reject(err); // Reject the promise on error
+						reject(err);
 					},
 					onSuccess: () => {
-						resolve("Wallet connected!"); // Resolve the promise on success
+						resolve("Wallet connected!");
 					},
 				}
 			);

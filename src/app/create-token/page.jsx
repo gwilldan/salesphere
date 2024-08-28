@@ -1,20 +1,27 @@
 "use client";
-import { useAccount, useWaitForTransactionReceipt } from "wagmi";
+import { useAccount } from "wagmi";
 import { config } from "@/web3/config";
-import { switchChain } from "@wagmi/core";
-import { writeContract, readContract } from "@wagmi/core";
+import {
+	writeContract,
+	switchChain,
+	waitForTransactionReceipt,
+} from "@wagmi/core";
 import { FactoryABI } from "@/web3/ABI/FactoryABI";
 import { Web3Context } from "@/web3/web3Contexts";
-import { useContext } from "react";
+import { useContext, useState } from "react";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 export default function CreateToken() {
 	const { chainId } = useAccount();
 	const configChain = config.chains[0].id;
 	const { isConnected } = useAccount();
-	const { handleConnect, handleConnectPromise } = useContext(Web3Context);
+	const { handleConnectPromise } = useContext(Web3Context);
+
+	const [loading, setLoading] = useState(false);
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
+		setLoading(true);
 
 		const formData = new FormData(e.target);
 		const data = Object.fromEntries(formData);
@@ -35,10 +42,17 @@ export default function CreateToken() {
 				functionName: "createToken",
 				args: [data.name, data.symbol, BigInt(data.supply)],
 			});
-			console.log("Submitted");
+
+			const transactionReceipt = await waitForTransactionReceipt(config, {
+				hash: tx,
+			});
+
+			console.log("Submitted", transactionReceipt);
 			document.getElementById("myForm").reset();
 		} catch (error) {
 			console.error("This is handleSubmit error!", error);
+		} finally {
+			setLoading(false);
 		}
 	};
 
@@ -100,12 +114,22 @@ export default function CreateToken() {
 
 					<button
 						type="submit"
-						className="bg-slate-400 hover:bg-slate-500 text-primary-foreground hover:bg-primary/80 px-4 py-2 rounded-md mt-5 font-semibold ease-linear duration-150 transition-colors"
+						className={`bg-slate-400 hover:bg-slate-500 text-primary-foreground hover:bg-primary/80 px-4 py-2 rounded-md mt-5 font-semibold ease-linear duration-150 transition-all ${loading &&
+							"bg-slate-800 hover:bg-slate-800"}`}
+						disabled={loading ? true : false}
 					>
-						Submit
+						{loading ? <Loading /> : "Submit"}
 					</button>
 				</form>
 			</div>
 		</main>
 	);
 }
+
+const Loading = () => {
+	return (
+		<>
+			<AiOutlineLoading3Quarters className="animate-spin " />
+		</>
+	);
+};
