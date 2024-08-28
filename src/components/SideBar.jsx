@@ -39,7 +39,7 @@ const SideBar = () => {
 
 export default SideBar;
 
-const pages = [
+export const pages = [
 	{
 		name: "Join Public sale",
 		icon: <FaRocket />,

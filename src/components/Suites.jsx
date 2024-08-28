@@ -14,7 +14,7 @@ const Suites = () => {
 				{suiteCards.map((suite) => (
 					<figcaption
 						key={suite.title}
-						className=" bg-slate-900 rounded-lg p-6 text-center max-w-[500px] shrink-0 lg:hover:outline outline-slate-400 transition-all ease-linear duration-150"
+						className=" bg-slate-900 rounded-lg p-6 text-center max-w-[500px] shrink-0 lg:hover:outline outline-slate-400 transition-all ease-linear duration-150 cursor-default"
 					>
 						{/* <img src="" alt="" className="size-[64px] rounded-full " /> */}
 						<div className="size-[64px] rounded-full bg-slate-600 mx-auto mb-7 "></div>

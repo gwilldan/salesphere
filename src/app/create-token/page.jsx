@@ -57,10 +57,10 @@ export default function CreateToken() {
 	};
 
 	return (
-		<main className=" pt-5">
+		<main className=" pt-5 ">
 			<h1 className=" text-[32px] font-bold text-center mb-10">CREATE TOKEN</h1>
-			<div className="bg-slate-700 max-w-[800px] mx-auto p-6 rounded-lg shadow-lg ">
-				<h2 className="text-2xl font-bold text-primary mb-4">Token Details</h2>
+			<div className="bg-slate-700 max-w-[800px] mx-auto px-4 py-6 lg:p-6 rounded-lg shadow-lg ">
+				<h2 className="text-2xl font-bold mb-4">Token Details</h2>
 				<form id="myForm" onSubmit={handleSubmit}>
 					<div className="mb-4">
 						<label
