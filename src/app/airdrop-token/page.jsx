@@ -14,6 +14,7 @@ import {
 	txComplete,
 	getSymbol,
 } from "@/web3/utils";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 export default function AirdropToken() {
 	// // airdropTool deployed contract address
