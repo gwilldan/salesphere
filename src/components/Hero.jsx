@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 
 const Hero = () => {
-	const words = ["Create", "Presale", "Private sale", "Distribute", "Launch"];
+	const words = ["Create", "Presale", "Private sale", "Airdrop", "Launch"];
 	const [currentIndex, setCurrentIndex] = useState(0);
 
 	useEffect(() => {
@@ -33,22 +33,25 @@ const Hero = () => {
 				<br />
 				your tokens in one click
 			</h2>
-			<p className=" text-[14px] text-slate-300 lg:text-base mt-4 leading-6">
+			<p className=" text-[14px] text-slate-400 lg:text-base mt-4 leading-6">
 				Simplify your ERC-20 token journey. From creation to distribution,
 				manage everything effortlessly with a single platform designed to
 				accelerate your token launch. Focus on your vision while Salesphere
 				handles the rest
 			</p>
 
-			<div className=" flex mt-7 items-center gap-4">
+			<div className=" flex mt-7 items-center gap-4 w-fit mx-auto lg:w-full ">
 				<Link
 					href="/create-token"
-					className=" bg-slate-400 text-slate-900 p-4 rounded-md lg:hover:bg-slate-500 font-semibold "
+					className=" bg-slate-400 text-slate-900 px-4 py-3 rounded-md lg:hover:bg-slate-500 font-semibold ease-linear transition-colors duration-100 "
 				>
 					Create Token
 				</Link>
 
-				<a href="#" className="underline ">
+				<a
+					href="#"
+					className="underline hover:text-slate-400 ease-linear transition-colors duration-100"
+				>
 					Learn more
 				</a>
 			</div>
