@@ -16,6 +16,25 @@ export const getDecimal = async (tokenAddress) => {
 	return decimal;
 };
 
+export const getBalance = async (tokenAddress, userAddress) => {
+	const balance = await readContract(config, {
+		abi: erc20Abi,
+		address: tokenAddress,
+		functionName: "balanceOf",
+		args: [userAddress],
+	});
+	return balance;
+};
+
+export const getName = async (tokenAddress) => {
+	const name = await readContract(config, {
+		abi: erc20Abi,
+		address: tokenAddress,
+		functionName: "name",
+	});
+	return name;
+};
+
 export const getSymbol = async (tokenAddress) => {
 	const symbol = await readContract(config, {
 		abi: erc20Abi,
@@ -55,7 +74,7 @@ export const getSingleAirdropData = async (
 	addressList,
 	amount
 ) => {
-	const [totalAmount, totalAmountWithFees] = await readContract(config, {
+	const [totalFees, totalAmounts] = await readContract(config, {
 		abi: AidropABI,
 		address: airdropToolAddress,
 		functionName: "calculateDistributeSingleAmountFees",
@@ -65,6 +84,20 @@ export const getSingleAirdropData = async (
 	return {
 		totalAmount: totalAmount,
 		totalAmountWithFees: totalAmountWithFees,
+	};
+};
+
+export const getMultiAirdropData = async (airdropToolAddress, amounts) => {
+	const [totalFees, totalAmounts] = await readContract(config, {
+		abi: AidropABI,
+		address: airdropToolAddress,
+		functionName: "calculateDistributeTokensFees",
+		args: [amounts],
+	});
+
+	return {
+		totalFees: totalFees,
+		totalAmounts: totalAmounts,
 	};
 };
 

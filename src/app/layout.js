@@ -21,7 +21,7 @@ export default function RootLayout({ children }) {
 					<main className="w-full h-full flex flex-col overflow-x-hidden">
 						<Nav />
 						<div className=" flex-1 overflow-y-auto pt-[30px]">
-							<div className=" px-4">{children}</div>
+							<div className=" px-4 min-h-dvh">{children}</div>
 							<Footer />
 						</div>
 					</main>
