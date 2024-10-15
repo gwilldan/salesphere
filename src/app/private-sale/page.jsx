@@ -1,5 +1,11 @@
+import { Building } from "@/components";
+
 const PrivateSale = () => {
-	return <div>This is the private Sales page!!!!</div>;
+	return (
+		<div>
+			<Building />
+		</div>
+	);
 };
 
 export default PrivateSale;

@@ -136,10 +136,11 @@ export default function AirdropToken() {
 				<form
 					onSubmit={handleSubmit}
 					id="airdropForm"
-					className=" bg-slate-700 max-w-[800px] mx-auto px-4 py-6 lg:p-6 rounded-lg shadow-lg "
-				>
+					className=" bg-slate-700 max-w-[800px] mx-auto px-4 py-6 lg:p-6 rounded-lg shadow-lg ">
 					<div className="mb-4">
-						<label htmlFor="token" className="block text-sm font-medium my-1 ">
+						<label
+							htmlFor="token"
+							className="block text-sm font-medium my-1 ">
 							Select Token
 						</label>
 
@@ -156,27 +157,23 @@ export default function AirdropToken() {
 					<div className="mb-4">
 						<label
 							htmlFor="addressList"
-							className="block text-sm font-medium text-primary my-1"
-						>
+							className="block text-sm font-medium text-primary my-1">
 							Address List
 						</label>
 						<textarea
 							required
 							id="addressList"
 							name="addressList"
-							placeholder="0xWallet1, amount1 
-							0xWallet2, amount2
-							0xWallet3, amount3"
-							className="w-full px-3 py-2 placeholder-input text-black bg-input border border-border rounded-md focus:outline-none focus:ring ring-primary "
-						></textarea>
+							placeholder="In each line, input the address and amount seperated by a ' comma ' (,) "
+							className="w-full px-3 py-2 placeholder-input text-black bg-input border border-border rounded-md focus:outline-none focus:ring ring-primary "></textarea>
 					</div>
 
 					<button
 						type="submit"
-						className={`bg-slate-400 hover:bg-slate-500 text-primary-foreground hover:bg-primary/80 px-4 py-2 rounded-md mt-5 font-semibold ease-linear duration-150 transition-all ${loading &&
-							"bg-slate-800 hover:bg-slate-800"}`}
-						disabled={loading ? true : false}
-					>
+						className={`bg-slate-400 hover:bg-slate-500 text-primary-foreground hover:bg-primary/80 px-4 py-2 rounded-md mt-5 font-semibold ease-linear duration-150 transition-all ${
+							loading && "bg-slate-800 hover:bg-slate-800"
+						}`}
+						disabled={loading ? true : false}>
 						{loading ? <Loading /> : "Submit"}
 					</button>
 				</form>

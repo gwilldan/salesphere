@@ -1,5 +1,11 @@
+import { Building } from "@/components";
+
 const Presale = () => {
-	return <div>presale Page</div>;
+	return (
+		<div>
+			<Building />
+		</div>
+	);
 };
 
 export default Presale;

@@ -38,14 +38,19 @@ export default SideBar;
 
 export const pages = [
 	{
-		name: "Create Sale",
-		icon: <AiOutlineDollarCircle />,
-		href: "create-sale",
+		name: "Create Token",
+		icon: <FiPlusCircle />,
+		href: "create-token",
 	},
 	{
 		name: "Airdrop Token",
 		icon: <TbDroplets />,
 		href: "airdrop-token",
+	},
+	{
+		name: "Create Sale",
+		icon: <AiOutlineDollarCircle />,
+		href: "create-sale",
 	},
 	{
 		name: "Join Public sale",
@@ -56,10 +61,5 @@ export const pages = [
 		name: "Join Private Sale",
 		icon: <GoShieldLock />,
 		href: "/private-sale",
-	},
-	{
-		name: "Create Token",
-		icon: <FiPlusCircle />,
-		href: "create-token",
 	},
 ];

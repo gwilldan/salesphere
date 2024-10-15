@@ -5,3 +5,4 @@ export { default as Rotation } from "./Rotation";
 export { default as Suites } from "./Suites";
 export { default as Footer } from "./Footer";
 export { default as MobileNav } from "./MobileNav";
+export { default as Building } from "./Building";
