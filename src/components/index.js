@@ -6,3 +6,6 @@ export { default as Suites } from "./Suites";
 export { default as Footer } from "./Footer";
 export { default as MobileNav } from "./MobileNav";
 export { default as Building } from "./Building";
+export { default as Loader } from "./Loader";
+export { default as TopSection } from "./crowdfundings/TopSection";
+export { default as BottomSection } from "./crowdfundings/BottomSection";

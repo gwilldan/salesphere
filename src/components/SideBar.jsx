@@ -3,6 +3,7 @@ import { FaRocket } from "react-icons/fa6";
 import { GoShieldLock } from "react-icons/go";
 import { TbDroplets } from "react-icons/tb";
 import { AiOutlineDollarCircle } from "react-icons/ai";
+import { BiSolidDonateHeart } from "react-icons/bi";
 import Link from "next/link";
 
 const SideBar = () => {
@@ -46,6 +47,11 @@ export const pages = [
 		name: "Airdrop Token",
 		icon: <TbDroplets />,
 		href: "airdrop-token",
+	},
+	{
+		name: "Crowdfundings",
+		icon: <BiSolidDonateHeart />,
+		href: "crowdfundings",
 	},
 	{
 		name: "Create Sale",

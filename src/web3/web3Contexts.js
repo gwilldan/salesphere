@@ -1,66 +1,75 @@
-"use client";
 import { createContext, useState, useEffect } from "react";
 export const Web3Context = createContext();
+import {
+	useAccountModal,
+	useConnectModal,
+	useChainModal,
+	connectorsForWallets,
+} from "@rainbow-me/rainbowkit";
 
-import { Connector, useConnect, useAccount, useDisconnect } from "wagmi";
+import { useAccount, useSwitchChain, useDisconnect } from "wagmi";
 import { config } from "./config";
 
 const Web3Contexts = ({ children }) => {
-	const { connectors, connect } = useConnect();
+	// states
 	const [isClient, setIsClient] = useState(false);
-	const { isConnected, address, connector } = useAccount();
+	const [isReqChain, setIsReqChain] = useState(false);
+
+	const { isConnected, address, connector, chainId } = useAccount();
+	const { openConnectModal, connectModalOpen } = useConnectModal();
+	const { openAccountModal } = useAccountModal();
+	const { openChainModal } = useChainModal();
+	const { switchChainAsync } = useSwitchChain();
 	const { disconnect } = useDisconnect();
 
 	useEffect(() => {
-		setIsClient(true);
-	}, []);
+		const handleSwitch = async () => {
+			try {
+				if (!isConnected) {
+					return;
+				}
 
-	if (!isClient) {
-		return null;
-	}
+				const reqChain = config.chains.find(
+					(_config) => _config.id === chainId
+				);
+
+				if (!reqChain) {
+					await switchChainAsync({
+						chainId: config.chains[0].id,
+						connector: connector,
+					});
+					console.log("switched chain");
+				}
+			} catch (error) {
+				console.error("handle switch errorr ---- ", error);
+			}
+		};
+	}, [chainId, isConnected]);
+
+	// useEffect(() => {
+	// 	setIsClient(true);
+	// }, []);
+
+	// if (!isClient) {
+	// 	return null;
+	// }
 
 	const handleConnect = async () => {
-		if (address) {
-			disconnect();
-			return console.log("disconnected");
-		}
-		const wallet = connectors.find(
-			(connector) => connector.name.toLowerCase() === "metamask".toLowerCase()
-		);
-		connect(
-			{ connector: wallet, chainId: config.chains[0].id },
-			{
-				onError: (err) => {
-					console.log("Errror!!!", err);
-				},
+		try {
+			if (isConnected) {
+				openAccountModal();
+				// openChainModal();
+				// disconnect();
+				return console.log("disconnected");
 			}
-		);
+
+			openConnectModal();
+		} catch (error) {
+			console.error("handleConnect error", error);
+		}
 	};
 
-	const handleConnectPromise = () =>
-		new Promise((resolve, reject) => {
-			const wallet = connectors.find(
-				(connector) => connector.name.toLowerCase() === "metamask".toLowerCase()
-			);
-
-			if (!wallet) {
-				reject(new Error("Wallet not found"));
-				return;
-			}
-
-			connect(
-				{ connector: wallet, chainId: config.chains[0].id },
-				{
-					onError: (err) => {
-						console.log("Error:", err);
-						reject(err);
-					},
-					onSuccess: () => {
-						resolve("Wallet connected!");
-					},
-				}
-			);
-		});
+	const handleConnectPromise = () => new Promise((resolve, reject) => {});
 
 	return (
 		<Web3Context.Provider
@@ -70,8 +79,7 @@ const Web3Contexts = ({ children }) => {
 				address,
 				connector,
 				isConnected,
-			}}
-		>
+			}}>
 			{children}
 		</Web3Context.Provider>
 	);

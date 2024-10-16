@@ -126,58 +126,50 @@ export default function AirdropToken() {
 			<h1 className=" text-[32px] font-bold text-center mb-10">
 				AIRDROP TOKEN
 			</h1>
-			{!isConnected ? (
-				<div>
-					<h2 className=" text-[26px] text-center ">
-						CONNECT YOUR WALLET!!!!!
-					</h2>
+			<form
+				onSubmit={handleSubmit}
+				id="airdropForm"
+				className=" bg-slate-700 max-w-[800px] mx-auto px-4 py-6 lg:p-6 rounded-lg shadow-lg ">
+				<div className="mb-4">
+					<label
+						htmlFor="token"
+						className="block text-sm font-medium my-1 ">
+						Select Token *
+					</label>
+
+					<input
+						onChange={(e) => getTokenData(e.target.value)}
+						required
+						type="text"
+						id="token"
+						name="token"
+						placeholder="Input token contract address"
+						className="w-full px-3 py-2 placeholder-input text-black bg-input border rounded-md focus:outline-none focus:ring "
+					/>
 				</div>
-			) : (
-				<form
-					onSubmit={handleSubmit}
-					id="airdropForm"
-					className=" bg-slate-700 max-w-[800px] mx-auto px-4 py-6 lg:p-6 rounded-lg shadow-lg ">
-					<div className="mb-4">
-						<label
-							htmlFor="token"
-							className="block text-sm font-medium my-1 ">
-							Select Token
-						</label>
+				<div className="mb-4">
+					<label
+						htmlFor="addressList"
+						className="block text-sm font-medium text-primary my-1">
+						Address List *
+					</label>
+					<textarea
+						required
+						id="addressList"
+						name="addressList"
+						placeholder="In each line, input the address and amount seperated by a ' comma ' (,) "
+						className="w-full px-3 py-2 placeholder-input text-black bg-input border border-border rounded-md focus:outline-none focus:ring ring-primary "></textarea>
+				</div>
 
-						<input
-							onChange={(e) => getTokenData(e.target.value)}
-							required
-							type="text"
-							id="token"
-							name="token"
-							placeholder="Input token contract address"
-							className="w-full px-3 py-2 placeholder-input text-black bg-input border rounded-md focus:outline-none focus:ring "
-						/>
-					</div>
-					<div className="mb-4">
-						<label
-							htmlFor="addressList"
-							className="block text-sm font-medium text-primary my-1">
-							Address List
-						</label>
-						<textarea
-							required
-							id="addressList"
-							name="addressList"
-							placeholder="In each line, input the address and amount seperated by a ' comma ' (,) "
-							className="w-full px-3 py-2 placeholder-input text-black bg-input border border-border rounded-md focus:outline-none focus:ring ring-primary "></textarea>
-					</div>
-
-					<button
-						type="submit"
-						className={`bg-slate-400 hover:bg-slate-500 text-primary-foreground hover:bg-primary/80 px-4 py-2 rounded-md mt-5 font-semibold ease-linear duration-150 transition-all ${
-							loading && "bg-slate-800 hover:bg-slate-800"
-						}`}
-						disabled={loading ? true : false}>
-						{loading ? <Loading /> : "Submit"}
-					</button>
-				</form>
-			)}
+				<button
+					type="submit"
+					className={`bg-slate-400 hover:bg-slate-500 text-primary-foreground hover:bg-primary/80 px-4 py-2 rounded-md mt-5 font-semibold ease-linear duration-150 transition-all ${
+						loading && "bg-slate-800 hover:bg-slate-800"
+					}`}
+					disabled={loading ? true : false}>
+					{loading ? <Loading /> : "Submit"}
+				</button>
+			</form>
 		</div>
 	);
 }

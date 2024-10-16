@@ -14,18 +14,17 @@ export default function RootLayout({ children }) {
 	return (
 		<html lang="en">
 			<body
-				className={`${inter.className} bg-slate-800 text-white h-dvh w-dvw md:flex `}
-			>
-				<Web3Providers>
-					<SideBar />
-					<main className="w-full h-full flex flex-col overflow-x-hidden">
+				className={`${inter.className} bg-slate-800 text-white h-dvh w-dvw md:flex `}>
+				<SideBar />
+				<main className="w-full h-full flex flex-col overflow-x-hidden">
+					<Web3Providers>
 						<Nav />
-						<div className=" flex-1 overflow-y-auto pt-[30px]">
+						<div className=" flex-1 overflow-y-auto pt-[30px] lg:pt-[100px] ">
 							<div className=" px-4 min-h-dvh">{children}</div>
 							<Footer />
 						</div>
-					</main>
-				</Web3Providers>
+					</Web3Providers>
+				</main>
 			</body>
 		</html>
 	);

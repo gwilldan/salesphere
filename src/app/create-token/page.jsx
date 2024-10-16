@@ -61,13 +61,14 @@ export default function CreateToken() {
 			<h1 className=" text-[32px] font-bold text-center mb-10">CREATE TOKEN</h1>
 			<div className="bg-slate-700 max-w-[800px] mx-auto px-4 py-6 lg:p-6 rounded-lg shadow-lg ">
 				<h2 className="text-2xl font-bold mb-4">Token Details</h2>
-				<form id="myForm" onSubmit={handleSubmit}>
+				<form
+					id="myForm"
+					onSubmit={handleSubmit}>
 					<div className="mb-4">
 						<label
 							htmlFor="name"
-							className="block text-sm font-medium text-primary"
-						>
-							Coin Name
+							className="block text-sm font-medium text-primary">
+							Coin Name *
 						</label>
 						<input
 							required
@@ -81,9 +82,8 @@ export default function CreateToken() {
 					<div className="mb-4">
 						<label
 							htmlFor="symbol"
-							className="block text-sm font-medium text-primary"
-						>
-							Coin Symbol
+							className="block text-sm font-medium text-primary">
+							Coin Symbol *
 						</label>
 						<input
 							required
@@ -98,9 +98,8 @@ export default function CreateToken() {
 					<div className="mb-4">
 						<label
 							htmlFor="coin-symbol"
-							className="block text-sm font-medium text-primary"
-						>
-							Total Supply
+							className="block text-sm font-medium text-primary">
+							Total Supply *
 						</label>
 						<input
 							required
@@ -114,10 +113,10 @@ export default function CreateToken() {
 
 					<button
 						type="submit"
-						className={`bg-slate-400 hover:bg-slate-500 text-primary-foreground hover:bg-primary/80 px-4 py-2 rounded-md mt-5 font-semibold ease-linear duration-150 transition-all ${loading &&
-							"bg-slate-800 hover:bg-slate-800"}`}
-						disabled={loading ? true : false}
-					>
+						className={`bg-slate-400 hover:bg-slate-500 text-primary-foreground hover:bg-primary/80 px-4 py-2 rounded-md mt-5 font-semibold ease-linear duration-150 transition-all ${
+							loading && "bg-slate-800 hover:bg-slate-800"
+						}`}
+						disabled={loading ? true : false}>
 						{loading ? <Loading /> : "Submit"}
 					</button>
 				</form>

@@ -1,16 +1,15 @@
 import { useContext } from "react";
 import { Web3Context } from "@/web3/web3Contexts";
+import { useAccount } from "wagmi";
 
 const ConnectButton = () => {
-	const { address, handleConnect, isConnected, connector } = useContext(
-		Web3Context
-	);
+	const { address, handleConnect, isConnected } = useContext(Web3Context);
+	const { connector } = useAccount();
 
 	return (
 		<button
 			className="p-3 bg-slate-400 text-slate-900 font-semibold rounded-lg md:hover:bg-slate-500 transition-colors ease-linear duration-150 flex items-center gap-2 lg:gap-4 "
-			onClick={handleConnect}
-		>
+			onClick={handleConnect}>
 			{isConnected && (
 				<img
 					src={connector.icon}
