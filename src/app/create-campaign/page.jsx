@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Loader } from "@/components";
 import FormField from "@/components/crowdfundings/FormField";
 
-const createCampaign = () => {
+const CreateCampaign = () => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [form, setForm] = useState({
 		name: "",
@@ -115,4 +115,4 @@ const createCampaign = () => {
 	);
 };
 
-export default createCampaign;
+export default CreateCampaign;
