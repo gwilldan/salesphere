@@ -23,6 +23,7 @@
     "wagmi": "^2.12.18"
   },
   "devDependencies": {
+    "encoding": "^0.1.13",
     "eslint": "^8",
     "eslint-config-next": "14.2.6",
     "postcss": "^8",
