@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import { useAccount } from "wagmi";
 import { config } from "@/web3/config";
 import {
@@ -6,16 +7,13 @@ import {
 	switchChain,
 	waitForTransactionReceipt,
 } from "@wagmi/core";
-import { FactoryABI } from "@/web3/ABI/FactoryABI";
-import { Web3Context } from "@/web3/web3Contexts";
-import { useContext, useState } from "react";
+import FactoryABI from "@/web3/ABI/FactoryABI";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { tokenFactory_CA_BARTIO } from "@/constants";
 
 export default function CreateToken() {
-	const { chainId } = useAccount();
+	const { chainId, isConnected } = useAccount();
 	const configChain = config.chains[0].id;
-	const { isConnected } = useAccount();
-	const { handleConnectPromise } = useContext(Web3Context);
 
 	const [loading, setLoading] = useState(false);
 
@@ -38,7 +36,7 @@ export default function CreateToken() {
 			}
 			const tx = await writeContract(config, {
 				abi: FactoryABI,
-				address: "0x8c2a5f464d3ef1178850aa430b8b6a8ad1c06231",
+				address: tokenFactory_CA_BARTIO,
 				functionName: "createToken",
 				args: [data.name, data.symbol, BigInt(data.supply)],
 			});

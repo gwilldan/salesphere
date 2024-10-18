@@ -1,17 +1,22 @@
 "use client";
 import { useState, useEffect } from "react";
-import { AidropABI } from "@/web3/ABI/AirdropABI";
+import AirdropABI from "@/web3/ABI/AirdropABI";
 import { config } from "@/web3/config";
-import { writeContract, readContract } from "@wagmi/core";
+import {
+	writeContract,
+	readContract,
+	waitForTransactionReceipt,
+} from "@wagmi/core";
 import { useAccount } from "wagmi";
-import { erc20Abi, formatUnits, parseUnits } from "viem";
+import { erc20Abi, formatEther, formatUnits, parseUnits } from "viem";
+import { aidrop_CA_BARTIO } from "@/constants";
+
 import {
 	checkAllowance,
 	approve,
 	getDecimal,
 	airdrop,
 	getSingleAirdropData,
-	txComplete,
 	getSymbol,
 	getBalance,
 	getName,
@@ -20,20 +25,15 @@ import {
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 export default function AirdropToken() {
-	// // airdropTool deployed contract address
-	// const CA = "0xC318C75A4F7Aae09fFDBb09062E1116828f894E2";
 	const [tokenData, setTokenData] = useState();
-	const { address, chainId, isConnected } = useAccount({
-		name: "",
-		symbol: "",
-		decimal: "",
-		balance: "",
-		formattedBal: "",
-	});
+	const { address, chainId, isConnected } = useAccount();
 	const [loading, setLoading] = useState(false);
 
 	const getTokenData = async (token) => {
-		if (!token) return console.error("token address input value missing!");
+		if (!token) {
+			setTokenData("");
+			return console.error("Input token address!");
+		}
 
 		try {
 			const [name, symbol, decimal, balance] = await Promise.all([
@@ -49,14 +49,21 @@ export default function AirdropToken() {
 				decimal: decimal,
 				balance: balance,
 				formattedBal: formattedBal,
+				address: token,
 			});
 		} catch (error) {
-			console.error("errrrooor!!", error);
+			console.error(error?.message);
+			setTokenData({
+				error: "Unknown Token Address",
+			});
 		}
 	};
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
+
+		setLoading(true);
+
 		const addresses = [];
 		const amounts = [];
 
@@ -73,51 +80,58 @@ export default function AirdropToken() {
 				amounts.push(parseUnits(amount, Number(tokenData.decimal)));
 			});
 
-			const { totalAmounts } = await calculateDistributeTokensFees(CA, amounts);
+			const [, totalAmountWithFees] = await readContract(config, {
+				abi: AirdropABI,
+				address: aidrop_CA_BARTIO,
+				functionName: "calculateDistributeTokensFees",
+				args: [amounts],
+			});
 
-			console.log(totalAmounts);
+			if (tokenData.balance < totalAmountWithFees)
+				return console.error(`INSUFFICIENT ${tokenData.symbol} TOKEN`);
 
-			// 	if (!totalAmountWithFees) return console.log("No Data returned!!!");
-			// 	const allowance = await checkAllowance(address, token, CA);
-			// 	console.log(
-			// 		"Total amount with fees",
-			// 		totalAmountWithFees,
-			// 		typeof totalAmountWithFees
-			// 	);
-			// 	console.log("Allowance", allowance, typeof allowance);
-			// 	// if (allowance == 0 || allowance < totalAmountWithFees) {
-			// 	// 	console.log("allowance is less than the total amount required ");
-			// 	// } else {
-			// 	// 	console.log(
-			// 	// 		"You can transfer tokens as the allowance is greater than amount needed!"
-			// 	// 	);
-			// 	// }
-			// 	if (allowance == 0 || allowance < totalAmountWithFees) {
-			// 		const approval = await approve(token, CA, totalAmountWithFees);
-			// 		console.log("hash", approval);
-			// 		// const txReciept = await txComplete(approval);
-			// 		// console.log("tx reciept!!!", txReciept);
-			// 	}
-			// 	const tx = await airdrop(CA, token, addressList, singleAmount);
-			// 	console.log(tx);
-			// document.getElementById("airdropForm").reset();
-			// console.log("amount array", amounts);
-			// const allowance = await checkAllowance(address, token, CA);
-			// if (allowance == 0) {
-			// 	console.log("ALLOWANCE IS ZERO");
-			// } else {
-			// 	console.log("THERE IS FUCKING ALLOWANCE!!! " + allowance);
-			// }
-			// const tx = await writeContract(config, {
-			// 	abi: AidropABI,
-			// 	address: CA,
-			// 	functionName: "distributeTokens",
-			// 	args: [token, addressList, amounts],
-			// });
-			// console.log("Successful...", tx);
-			// document.getElementById("airdropForm").reset();
+			const percentageFee = await readContract(config, {
+				abi: AirdropABI,
+				address: aidrop_CA_BARTIO,
+				functionName: "percentageFee",
+			});
+
+			if (!totalAmountWithFees) return console.error("No Data returned!!!");
+
+			const allowance = await checkAllowance(
+				address,
+				tokenData.address,
+				aidrop_CA_BARTIO
+			);
+
+			if (!allowance || allowance < totalAmountWithFees) {
+				const approval = await approve(
+					tokenData.address,
+					aidrop_CA_BARTIO,
+					totalAmountWithFees
+				);
+				await waitForTransactionReceipt(config, {
+					hash: approval,
+				});
+			}
+
+			const airdropTx = await airdrop(
+				aidrop_CA_BARTIO,
+				tokenData.address,
+				addresses,
+				amounts
+			);
+
+			const airdropReciept = await waitForTransactionReceipt(config, {
+				hash: airdropTx,
+			});
+			console.log("send tx reciept!!!", airdropReciept);
+
+			document.getElementById("airdropForm").reset();
 		} catch (error) {
-			console.error("error", error);
+			console.error("error", error?.message);
+		} finally {
+			setLoading(false);
 		}
 	};
 
@@ -146,7 +160,21 @@ export default function AirdropToken() {
 						placeholder="Input token contract address"
 						className="w-full px-3 py-2 placeholder-input text-black bg-input border rounded-md focus:outline-none focus:ring "
 					/>
+
+					{tokenData && (
+						<p
+							className={`italic text-[12px] mt-2  ${
+								tokenData.error ? "text-red-500" : "text-white"
+							} `}>
+							{tokenData.error
+								? `${tokenData.error}`
+								: `Bal: ${Number(tokenData.formattedBal).toLocaleString()} ${
+										tokenData.symbol
+								  }`}
+						</p>
+					)}
 				</div>
+
 				<div className="mb-4">
 					<label
 						htmlFor="addressList"
@@ -158,7 +186,7 @@ export default function AirdropToken() {
 						id="addressList"
 						name="addressList"
 						placeholder="In each line, input the address and amount seperated by a ' comma ' (,) "
-						className="w-full px-3 py-2 placeholder-input text-black bg-input border border-border rounded-md focus:outline-none focus:ring ring-primary "></textarea>
+						className="w-full px-3 py-2 h-[150px] placeholder-input text-black bg-input border border-border rounded-md focus:outline-none focus:ring ring-primary "></textarea>
 				</div>
 
 				<button

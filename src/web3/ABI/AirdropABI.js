@@ -1,4 +1,4 @@
-export const AidropABI = [
+const AidropABI = [
 	{
 		anonymous: false,
 		inputs: [
@@ -259,3 +259,5 @@ export const AidropABI = [
 		type: "function",
 	},
 ];
+
+export default AidropABI;

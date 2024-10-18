@@ -3,7 +3,7 @@ import {
 	readContract,
 	getTransactionReceipt,
 } from "@wagmi/core";
-import { AidropABI } from "./ABI/AirdropABI";
+import AidropABI from "./ABI/AirdropABI";
 import { config } from "./config";
 import { erc20Abi } from "viem";
 
@@ -101,25 +101,17 @@ export const getMultiAirdropData = async (airdropToolAddress, amounts) => {
 	};
 };
 
-export const txComplete = async (hash, chainId) => {
-	const txReciept = await getTransactionReceipt(config, {
-		hash: hash,
-		chainId: chainId,
-	});
-	return txReciept;
-};
-
 export const airdrop = async (
 	airdropToolAddress,
 	tokenAddress,
 	addressList,
-	amount
+	amountList
 ) => {
 	const tx = await writeContract(config, {
 		abi: AidropABI,
 		address: airdropToolAddress,
-		functionName: "distributeSingleAmount",
-		args: [tokenAddress, addressList, amount],
+		functionName: "distributeTokens",
+		args: [tokenAddress, addressList, amountList],
 	});
 
 	return tx;

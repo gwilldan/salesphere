@@ -1,26 +1,20 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useEffect } from "react";
 export const Web3Context = createContext();
 import {
 	useAccountModal,
 	useConnectModal,
 	useChainModal,
-	connectorsForWallets,
 } from "@rainbow-me/rainbowkit";
 
 import { useAccount, useSwitchChain, useDisconnect } from "wagmi";
 import { config } from "./config";
 
 const Web3Contexts = ({ children }) => {
-	// states
-	const [isClient, setIsClient] = useState(false);
-	const [isReqChain, setIsReqChain] = useState(false);
-
 	const { isConnected, address, connector, chainId } = useAccount();
 	const { openConnectModal, connectModalOpen } = useConnectModal();
 	const { openAccountModal } = useAccountModal();
 	const { openChainModal } = useChainModal();
 	const { switchChainAsync } = useSwitchChain();
-	const { disconnect } = useDisconnect();
 
 	useEffect(() => {
 		const handleSwitch = async () => {
@@ -44,15 +38,9 @@ const Web3Contexts = ({ children }) => {
 				console.error("handle switch errorr ---- ", error);
 			}
 		};
+
+		handleSwitch();
 	}, [chainId, isConnected]);
-
-	// useEffect(() => {
-	// 	setIsClient(true);
-	// }, []);
-
-	// if (!isClient) {
-	// 	return null;
-	// }
 
 	const handleConnect = async () => {
 		try {
