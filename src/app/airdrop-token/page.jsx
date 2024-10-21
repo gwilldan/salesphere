@@ -136,7 +136,7 @@ export default function AirdropToken() {
 	};
 
 	return (
-		<div className=" mb-[150px]">
+		<div className=" pt-5 px-3 mb-5 min-h-dvh ">
 			<h1 className=" text-[32px] font-bold text-center mb-10">
 				AIRDROP TOKEN
 			</h1>

@@ -55,7 +55,7 @@ export default function CreateToken() {
 	};
 
 	return (
-		<main className=" pt-5 ">
+		<main className=" pt-5 px-3 mb-5 min-h-dvh ">
 			<h1 className=" text-[32px] font-bold text-center mb-10">CREATE TOKEN</h1>
 			<div className="bg-slate-700 max-w-[800px] mx-auto px-4 py-6 lg:p-6 rounded-lg shadow-lg ">
 				<h2 className="text-2xl font-bold mb-4">Token Details</h2>

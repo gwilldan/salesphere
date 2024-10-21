@@ -8,7 +8,7 @@ import Link from "next/link";
 
 const SideBar = () => {
 	return (
-		<aside className=" hidden lg:block bg-slate-900 border-r-[0.5px] border-slate-700 md:h-dvh w-[80px]">
+		<aside className=" hidden lg:block bg-slate-900 border-r-[0.5px] border-slate-700 h-full w-[80px]">
 			<Link
 				href="/"
 				className=" size-[80px] border-r-[0.5px] border-b-[0.5px] border-slate-700 grid place-content-center">

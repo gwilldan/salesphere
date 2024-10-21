@@ -10,7 +10,7 @@ const Nav = () => {
 	const [toggle, setToggle] = useState(false);
 
 	return (
-		<nav className=" p-4 bg-slate-900 z-10 flex items-center justify-between border-b-[0.5px] border-slate-700 ease-linear duration-150 transition-all lg:h-[80px] fixed top-0 w-full lg:w-[calc(100%-80px)]">
+		<nav className=" p-4 bg-slate-900 z-10 flex items-center justify-between border-b-[0.5px] border-slate-700 ease-linear duration-150 transition-all lg:h-[80px] w-full shrink-0 shadow-lg ">
 			<div>
 				<Link
 					href="/"
