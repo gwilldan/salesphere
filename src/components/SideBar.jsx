@@ -12,9 +12,7 @@ const SideBar = () => {
 			<Link
 				href="/"
 				className=" size-[80px] border-r-[0.5px] border-b-[0.5px] border-slate-700 grid place-content-center">
-				<figcaption
-					href="/"
-					className=" font-extrabold bg-slate-700 rounded-md size-10 grid place-content-center ">
+				<figcaption className=" font-extrabold bg-slate-700 rounded-md size-10 grid place-content-center ">
 					S
 				</figcaption>
 			</Link>
@@ -41,22 +39,22 @@ export const pages = [
 	{
 		name: "Create Token",
 		icon: <FiPlusCircle />,
-		href: "create-token",
+		href: "/create-token",
 	},
 	{
 		name: "Airdrop Token",
 		icon: <TbDroplets />,
-		href: "airdrop-token",
+		href: "/airdrop-token",
 	},
 	{
 		name: "Crowdfundings",
 		icon: <BiSolidDonateHeart />,
-		href: "crowdfundings",
+		href: "/crowdfundings",
 	},
 	{
 		name: "Create Sale",
 		icon: <AiOutlineDollarCircle />,
-		href: "create-sale",
+		href: "/create-sale",
 	},
 	{
 		name: "Join Public sale",

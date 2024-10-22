@@ -39,7 +39,7 @@ const CreateCampaign = () => {
 
 	return (
 		<main className=" px-3 mb-[100px] min-h-dvh ">
-			<div className=" mt-[75px] lg:mt-[50px] bg-slate-700 text-white max-w-[800px] mx-auto flex justify-center items-center flex-col rounded-[10px] sm:p-10 pt-5 px-3">
+			<div className=" mt-[75px] lg:mt-[50px] bg-slate-700 text-white max-w-[800px] mx-auto flex justify-center items-center flex-col rounded-[10px] md:p-10 py-5 px-3">
 				<h1 className=" text-[32px] font-bold text-center">Start a campaign</h1>
 
 				<form
