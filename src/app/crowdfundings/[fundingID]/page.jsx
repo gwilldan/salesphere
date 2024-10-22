@@ -1,7 +1,7 @@
 import { fundingData } from "@/components/crowdfundings/data";
 import { Fund } from "@/components";
 
-const page = ({ params }) => {
+const Funding = ({ params }) => {
 	const camapign = fundingData.find(
 		(funding) => funding.id == params.fundingID
 	);
@@ -130,7 +130,7 @@ const page = ({ params }) => {
 	);
 };
 
-export default page;
+export default Funding;
 
 const CountBox = ({ title, value }) => {
 	return (

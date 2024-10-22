@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { TopSection, BottomSection } from "@/components";
 import { fundingData } from "@/components/crowdfundings/data";
 
-const page = () => {
+const Crowdfundings = () => {
 	const [fundings, setFundings] = useState(fundingData);
 	const [search, setSearch] = useState("");
 
@@ -36,4 +36,4 @@ const page = () => {
 	);
 };
 
-export default page;
+export default Crowdfundings;
