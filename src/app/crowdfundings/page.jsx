@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { TopSection, BottomSection } from "@/components";
 import { fundingData } from "@/components/crowdfundings/data";
 
@@ -30,7 +30,12 @@ const Crowdfundings = () => {
 					setSearch={setSearch}
 					handleSearch={handleSearch}
 				/>
-				<BottomSection fundings={fundings} />
+				<Suspense
+					fallback={
+						<div className=" p-10 text-center mx-auto ">Loading...</div>
+					}>
+					<BottomSection fundings={fundings} />
+				</Suspense>
 			</div>
 		</main>
 	);

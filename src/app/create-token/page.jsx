@@ -20,7 +20,7 @@ export default function CreateToken() {
 	const configChain = config.chains[0].id;
 
 	const [loading, setLoading] = useState(false);
-	const [txPending, setTxPending] = useState(false);
+	const [txStatus, setTxStatus] = useState("");
 	const [toggleModal, setToggleModal] = useState(false);
 	const [tokenData, setTokenData] = useState({
 		name: "",
@@ -55,7 +55,7 @@ export default function CreateToken() {
 				args: [tokenData.name, tokenData.symbol, BigInt(tokenData.supply)],
 			});
 
-			const toastID = toast.loading("Transaction pending ... ", {
+			const toastID = toast.loading(" Minting tokens ... ", {
 				style: {
 					backgroundColor: "#64748b",
 					color: "white",
@@ -67,10 +67,10 @@ export default function CreateToken() {
 			});
 
 			toast.update(toastID, {
-				render: `${tokenData.supply} ${tokenData.supply} Minted successfully!`,
+				render: `${tokenData.supply} ${tokenData.symbol} Minted successfully!`,
 				type: "success",
 				isLoading: false,
-				autoClose: 2000,
+				autoClose: 3000,
 			});
 
 			console.log("Submitted", transactionReceipt);

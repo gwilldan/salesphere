@@ -157,6 +157,7 @@ export default function AirdropToken() {
 						type="text"
 						id="token"
 						name="token"
+						autoComplete="off"
 						placeholder="Input token contract address"
 						className="w-full px-3 py-2 placeholder-input text-black bg-input border rounded-md focus:outline-none focus:ring "
 					/>

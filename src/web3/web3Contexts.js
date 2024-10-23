@@ -6,12 +6,12 @@ import {
 	useChainModal,
 } from "@rainbow-me/rainbowkit";
 
-import { useAccount, useSwitchChain, useDisconnect } from "wagmi";
+import { useAccount, useSwitchChain } from "wagmi";
 import { config } from "./config";
 
 const Web3Contexts = ({ children }) => {
 	const { isConnected, address, connector, chainId } = useAccount();
-	const { openConnectModal, connectModalOpen } = useConnectModal();
+	const { openConnectModal } = useConnectModal();
 	const { openAccountModal } = useAccountModal();
 	const { openChainModal } = useChainModal();
 	const { switchChainAsync } = useSwitchChain();
@@ -46,8 +46,6 @@ const Web3Contexts = ({ children }) => {
 		try {
 			if (isConnected) {
 				openAccountModal();
-				// openChainModal();
-				// disconnect();
 				return console.log("disconnected");
 			}
 
@@ -57,13 +55,10 @@ const Web3Contexts = ({ children }) => {
 		}
 	};
 
-	const handleConnectPromise = () => new Promise((resolve, reject) => {});
-
 	return (
 		<Web3Context.Provider
 			value={{
 				handleConnect,
-				handleConnectPromise,
 				address,
 				connector,
 				isConnected,
