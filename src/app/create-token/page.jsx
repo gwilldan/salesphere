@@ -214,6 +214,7 @@ const ModalChildren = ({
 					<img
 						src="/images/cuteBear.webp"
 						alt="cutebear"
+						fetchPriority="high"
 						className="mx-auto h-[200px] "
 					/>
 

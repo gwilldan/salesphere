@@ -23,6 +23,7 @@ const Funding = ({ params }) => {
 						<div className=" overflow-hidden rounded-xl ">
 							<img
 								src={camapign.image}
+								fetchPriority="high"
 								alt="campaign"
 								className="w-full h-[410px] object-cover opacity-75 rounded-xl transition-all hover:opacity-90 hover:scale-110 duration-150 ease-linear "
 							/>
