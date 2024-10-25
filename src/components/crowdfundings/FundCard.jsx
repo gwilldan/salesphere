@@ -8,7 +8,6 @@ const FundCard = ({ funding }) => {
 			<div className="h-[158px] w-full overflow-hidden bg-slate-900 rounded-t-[15px]">
 				<img
 					src={funding.image}
-					loading="lazy"
 					alt="fund"
 					className=" object-cover rounded-[15px] group-hover:scale-110 ease-linear duration-150 transition-all"
 				/>
