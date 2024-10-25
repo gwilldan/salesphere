@@ -2,11 +2,7 @@
 import { useState } from "react";
 import { useAccount } from "wagmi";
 import { config } from "@/web3/config";
-import {
-	writeContract,
-	switchChain,
-	waitForTransactionReceipt,
-} from "@wagmi/core";
+import { writeContract, waitForTransactionReceipt } from "@wagmi/core";
 import FactoryABI from "@/web3/ABI/FactoryABI";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { tokenFactory_CA_BARTIO } from "@/constants";
@@ -15,13 +11,13 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { toast } from "react-toastify";
 
 export default function CreateToken() {
+	let toastID;
 	const { openConnectModal } = useConnectModal();
-	const { chainId, isConnected } = useAccount();
-	const configChain = config.chains[0].id;
-
+	const { isConnected } = useAccount();
 	const [loading, setLoading] = useState(false);
 	const [txStatus, setTxStatus] = useState("");
 	const [toggleModal, setToggleModal] = useState(false);
+	const [txHash, setTxHash] = useState("");
 	const [tokenData, setTokenData] = useState({
 		name: "",
 		symbol: "symbol",
@@ -37,17 +33,18 @@ export default function CreateToken() {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
+		setToggleModal(true);
 
 		if (!tokenData.name || !tokenData.supply || !tokenData.symbol)
 			return console.error("No token datas");
-
-		setToggleModal(true);
+		setTxStatus();
 	};
 
 	const handleMint = async () => {
-		try {
-			setLoading(true);
+		setLoading(true);
+		setTxStatus("pending");
 
+		try {
 			const tx = await writeContract(config, {
 				abi: FactoryABI,
 				address: tokenFactory_CA_BARTIO,
@@ -55,12 +52,7 @@ export default function CreateToken() {
 				args: [tokenData.name, tokenData.symbol, BigInt(tokenData.supply)],
 			});
 
-			const toastID = toast.loading(" Minting tokens ... ", {
-				style: {
-					backgroundColor: "#64748b",
-					color: "white",
-				},
-			});
+			toastID = toast.loading(" Minting tokens ... ");
 
 			const transactionReceipt = await waitForTransactionReceipt(config, {
 				hash: tx,
@@ -72,29 +64,42 @@ export default function CreateToken() {
 				isLoading: false,
 				autoClose: 3000,
 			});
-
-			console.log("Submitted", transactionReceipt);
+			setTxStatus("completed");
+			setTxHash(transactionReceipt?.hash);
+			console.log(transactionReceipt);
 			document.getElementById("myForm").reset();
-		} catch (error) {
-			console.error("This is handleMint error!", error);
-		} finally {
-			setLoading(false);
 			setTokenData({
 				name: "",
 				supply: "",
 				symbol: "",
 			});
+		} catch (error) {
+			setTxStatus("rejected");
+			toastID
+				? toast.update(toastID, {
+						render: error.message,
+						autoClose: 5000,
+						type: "error",
+				  })
+				: toast.error(`${error.shortMessage}`, {
+						autoClose: 5000,
+				  });
+			console.error("This is handleMint error!", error.shortMessage);
+		} finally {
+			setLoading(false);
 		}
 	};
 
 	return (
-		<main className=" pt-5 px-3 mb-5 min-h-dvh ">
+		<main className=" pt-5 px-3 mb-5 min-h-dvh  ">
 			{toggleModal && (
 				<Modal setToggleModal={setToggleModal}>
 					<ModalChildren
 						tokenData={tokenData}
 						handleMint={handleMint}
 						loading={loading}
+						txStatus={txStatus}
+						txHash={txHash}
 					/>
 				</Modal>
 			)}
@@ -124,7 +129,7 @@ export default function CreateToken() {
 						name={"supply"}
 						label={"Total Supply *"}
 						placeholder={"Enter total supply"}
-						type={"text"}>
+						type={"number"}>
 						{tokenData.supply && (
 							<p className="italic text-[12px] mt-2 ">
 								{Number(tokenData.supply).toLocaleString()}
@@ -193,33 +198,67 @@ const FormInputField = ({
 	);
 };
 
-const ModalChildren = ({ handleMint, tokenData, loading }) => {
-	return (
-		<div className=" w-fit h-fit text-center ">
-			<img
-				src="/images/cuteBear.webp"
-				alt="cutebear"
-				className="mx-auto h-[200px] "
-			/>
-			{/* <img
-				src="/images/dancingBear.gif"
-				alt="cuteBear"
-				className=" size-[100px] mx-auto rounded-full"
-			/> */}
-			<p className="my-4 text-2xl ">
-				{" "}
-				Mint {Number(tokenData.supply).toLocaleString()} {tokenData.name} (
-				{tokenData.symbol}) tokens
-			</p>
+const ModalChildren = ({
+	handleMint,
+	tokenData,
+	loading,
+	txStatus,
+	txHash,
+}) => {
+	console.log("TX ----- ", txStatus);
 
-			<button
-				onClick={handleMint}
-				disabled={loading ? true : false}
-				className={` bg-slate-600 shadow-xl w-[150px] h-[50px] grid place-content-center p-2 mx-auto transition-all duration-150 ease-linear hover:bg-slate-500 ${
-					loading && "bg-slate-800 hover:bg-slate-800"
-				} `}>
-				{loading ? <Loading /> : "Mint"}
-			</button>
+	return (
+		<div className="text-center ">
+			{!txStatus && (
+				<main>
+					<img
+						src="/images/cuteBear.webp"
+						alt="cutebear"
+						className="mx-auto h-[200px] "
+					/>
+
+					<p
+						className={`my-4 text-2xl ${
+							txStatus === "pending" && "text-red-500"
+						} `}>
+						{" "}
+						Mint {Number(tokenData.supply).toLocaleString()} {tokenData.name} (
+						{tokenData.symbol}) tokens
+					</p>
+					<button
+						onClick={handleMint}
+						className={` bg-slate-600 shadow-xl w-[150px] h-[50px] grid place-content-center p-2 mx-auto transition-all duration-150 ease-linear hover:bg-slate-500 ${
+							loading && "bg-slate-800 hover:bg-slate-800"
+						} `}>
+						Mint
+					</button>
+				</main>
+			)}
+
+			{txStatus === "rejected" && <div>TX REJECTED ...! </div>}
+
+			{txStatus === "completed" && (
+				<main>
+					<img
+						src="/images/dancingBear.gif"
+						alt="cuteBear"
+						className=" size-[200px] mx-auto rounded-full mb-5 "
+					/>
+					<div>
+						<h2 className=" my-3">Token mint successful </h2>
+						<p>{txHash}</p>
+					</div>
+				</main>
+			)}
+
+			{txStatus === "pending" && (
+				<main>
+					<div className=" text-[100px] my-4 ">
+						<Loading />
+					</div>
+					<p className="text-xl"> Minting ... </p>
+				</main>
+			)}
 		</div>
 	);
 };

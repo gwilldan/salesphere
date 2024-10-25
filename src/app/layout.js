@@ -21,6 +21,7 @@ export default function RootLayout({ children }) {
 					<ToastContainer
 						position="bottom-right"
 						pauseOnHover={false}
+						pauseOnFocusLoss={false}
 						hideProgressBar
 						newestOnTop={false}
 						limit={1}
