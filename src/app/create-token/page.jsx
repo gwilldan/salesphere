@@ -4,9 +4,8 @@ import { useAccount } from "wagmi";
 import { config } from "@/web3/config";
 import { writeContract, waitForTransactionReceipt } from "@wagmi/core";
 import FactoryABI from "@/web3/ABI/FactoryABI";
-import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { tokenFactory_CA_BARTIO } from "@/constants";
-import { Modal } from "@/components";
+import { Modal, ModalChildren, Loading } from "@/components";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { toast } from "react-toastify";
 
@@ -15,7 +14,10 @@ export default function CreateToken() {
 	const { openConnectModal } = useConnectModal();
 	const { isConnected } = useAccount();
 	const [loading, setLoading] = useState(false);
-	const [txStatus, setTxStatus] = useState("");
+	const [tx, setTx] = useState({
+		status: "",
+		message: "",
+	});
 	const [toggleModal, setToggleModal] = useState(false);
 	const [txHash, setTxHash] = useState("");
 	const [tokenData, setTokenData] = useState({
@@ -37,12 +39,18 @@ export default function CreateToken() {
 
 		if (!tokenData.name || !tokenData.supply || !tokenData.symbol)
 			return console.error("No token datas");
-		setTxStatus();
+		setTx({
+			message: "",
+			status: "",
+		});
 	};
 
 	const handleMint = async () => {
 		setLoading(true);
-		setTxStatus("pending");
+		setTx({
+			status: "awaiting",
+			message: `Waiting for your approval ... `,
+		});
 
 		try {
 			const tx = await writeContract(config, {
@@ -52,6 +60,10 @@ export default function CreateToken() {
 				args: [tokenData.name, tokenData.symbol, BigInt(tokenData.supply)],
 			});
 
+			setTx({
+				status: "pending",
+				message: `Minting tokens ... `,
+			});
 			toastID = toast.loading(" Minting tokens ... ");
 
 			const transactionReceipt = await waitForTransactionReceipt(config, {
@@ -64,7 +76,10 @@ export default function CreateToken() {
 				isLoading: false,
 				autoClose: 3000,
 			});
-			setTxStatus("completed");
+			setTx({
+				status: "completed",
+				message: `Minted Successfully `,
+			});
 			setTxHash(transactionReceipt?.hash);
 			console.log(transactionReceipt);
 			document.getElementById("myForm").reset();
@@ -74,10 +89,13 @@ export default function CreateToken() {
 				symbol: "",
 			});
 		} catch (error) {
-			setTxStatus("rejected");
+			setTx({
+				status: "rejected",
+				message: `Transaction Rejected!`,
+			});
 			toastID
 				? toast.update(toastID, {
-						render: error.message,
+						render: error.shortmessage,
 						autoClose: 5000,
 						type: "error",
 				  })
@@ -95,11 +113,13 @@ export default function CreateToken() {
 			{toggleModal && (
 				<Modal setToggleModal={setToggleModal}>
 					<ModalChildren
-						tokenData={tokenData}
-						handleMint={handleMint}
-						loading={loading}
-						txStatus={txStatus}
-						txHash={txHash}
+						tx={tx}
+						ModalMainUI={
+							<ModalMainUI
+								handleFunction={handleMint}
+								tokenData={tokenData}
+							/>
+						}
 					/>
 				</Modal>
 			)}
@@ -160,14 +180,6 @@ export default function CreateToken() {
 	);
 }
 
-const Loading = () => {
-	return (
-		<>
-			<AiOutlineLoading3Quarters className="animate-spin " />
-		</>
-	);
-};
-
 const FormInputField = ({
 	label,
 	name,
@@ -198,68 +210,25 @@ const FormInputField = ({
 	);
 };
 
-const ModalChildren = ({
-	handleMint,
-	tokenData,
-	loading,
-	txStatus,
-	txHash,
-}) => {
-	console.log("TX ----- ", txStatus);
-
+const ModalMainUI = ({ tokenData, handleFunction }) => {
 	return (
-		<div className="text-center ">
-			{!txStatus && (
-				<main>
-					<img
-						src="/images/cuteBear.webp"
-						alt="cutebear"
-						fetchPriority="high"
-						className="mx-auto h-[200px] "
-					/>
+		<main>
+			<img
+				src="/images/cuteBear.avif"
+				alt="cutebear"
+				fetchPriority="high"
+				className="mx-auto h-[200px] "
+			/>
 
-					<p
-						className={`my-4 text-2xl ${
-							txStatus === "pending" && "text-red-500"
-						} `}>
-						{" "}
-						Mint {Number(tokenData.supply).toLocaleString()} {tokenData.name} (
-						{tokenData.symbol}) tokens
-					</p>
-					<button
-						onClick={handleMint}
-						className={` bg-slate-600 shadow-xl w-[150px] h-[50px] grid place-content-center p-2 mx-auto transition-all duration-150 ease-linear hover:bg-slate-500 ${
-							loading && "bg-slate-800 hover:bg-slate-800"
-						} `}>
-						Mint
-					</button>
-				</main>
-			)}
-
-			{txStatus === "rejected" && <div>TX REJECTED ...! </div>}
-
-			{txStatus === "completed" && (
-				<main>
-					<img
-						src="/images/dancingBear.gif"
-						alt="cuteBear"
-						className=" size-[200px] mx-auto rounded-full mb-5 "
-					/>
-					<div>
-						<h2 className=" my-3">Token mint successful </h2>
-						<p>{txHash}</p>
-					</div>
-				</main>
-			)}
-
-			{txStatus === "pending" && (
-				<main>
-					<div className=" text-[100px] my-4 ">
-						<Loading />
-					</div>
-					<p className="text-xl"> Minting ... </p>
-				</main>
-			)}
-		</div>
+			<p className="my-4 text-2xl">
+				Mint {Number(tokenData.supply).toLocaleString()} {tokenData.name} (
+				{tokenData.symbol}) tokens
+			</p>
+			<button
+				onClick={handleFunction}
+				className=" bg-slate-600 shadow-xl w-[150px] h-[50px] grid place-content-center p-2 mx-auto transition-all duration-150 ease-linear hover:bg-slate-500 ">
+				Mint
+			</button>
+		</main>
 	);
 };

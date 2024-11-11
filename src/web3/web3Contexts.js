@@ -16,24 +16,28 @@ const Web3Contexts = ({ children }) => {
 	const { openChainModal } = useChainModal();
 	const { switchChainAsync } = useSwitchChain();
 
+	const checkAndSwitchChain = () => {
+		const reqChain = config.chains.find((_config) => _config.id === chainId);
+		try {
+			if (reqChain) {
+				return false;
+			} else {
+				openChainModal();
+				return true;
+			}
+		} catch (error) {
+			console.error("switch chain error", error);
+			return null;
+		}
+	};
+
 	useEffect(() => {
 		const handleSwitch = async () => {
 			try {
 				if (!isConnected) {
 					return;
 				}
-
-				const reqChain = config.chains.find(
-					(_config) => _config.id === chainId
-				);
-
-				if (!reqChain) {
-					await switchChainAsync({
-						chainId: config.chains[0].id,
-						connector: connector,
-					});
-					console.log("switched chain");
-				}
+				checkAndSwitchChain();
 			} catch (error) {
 				console.error("handle switch errorr ---- ", error);
 			}
@@ -45,8 +49,9 @@ const Web3Contexts = ({ children }) => {
 	const handleConnect = async () => {
 		try {
 			if (isConnected) {
-				openAccountModal();
-				return console.log("disconnected");
+				const isIncorrectChain = checkAndSwitchChain();
+				!isIncorrectChain && openAccountModal();
+				return;
 			}
 
 			openConnectModal();
@@ -62,6 +67,7 @@ const Web3Contexts = ({ children }) => {
 				address,
 				connector,
 				isConnected,
+				checkAndSwitchChain,
 			}}>
 			{children}
 		</Web3Context.Provider>
