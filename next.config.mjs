@@ -1,4 +1,8 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+	rules: {
+		quotes: ["off", "single"],
+	},
+};
 
 export default nextConfig;
