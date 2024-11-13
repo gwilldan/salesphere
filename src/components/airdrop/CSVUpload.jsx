@@ -5,8 +5,8 @@ const CSVUpload = ({ handleFileChange, csvFile }) => {
 		<>
 			<div className=" my-5 ">
 				<p>
-					Upload a .csv file containing the address and amounts data. Here's a
-					sample
+					Upload a .csv file containing the address and amounts data.
+					Here&apos;s a sample
 				</p>
 				<a
 					className="underline italic hover:text-slate-400 ease-linear transition-colors duration-150 "
