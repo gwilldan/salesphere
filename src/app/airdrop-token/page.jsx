@@ -1,14 +1,10 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import AirdropABI from "@/web3/ABI/AirdropABI";
 import { config } from "@/web3/config";
-import {
-	writeContract,
-	readContract,
-	waitForTransactionReceipt,
-} from "@wagmi/core";
+import { readContract, waitForTransactionReceipt } from "@wagmi/core";
 import { useAccount } from "wagmi";
-import { erc20Abi, formatEther, formatUnits, parseUnits } from "viem";
+import { formatUnits, parseUnits } from "viem";
 import { aidrop_CA_BARTIO } from "@/constants";
 import {
 	checkAllowance,
@@ -19,8 +15,14 @@ import {
 	getBalance,
 	getName,
 } from "@/web3/utils";
-import { AiOutlineLoading3Quarters } from "react-icons/ai";
-import { Modal, ModalChildren, Loading } from "@/components";
+import {
+	Modal,
+	ModalChildren,
+	Loading,
+	CSVUpload,
+	ModalMainUI,
+	ParseCSV,
+} from "@/components";
 import { toast } from "react-toastify";
 
 export default function AirdropToken() {
@@ -43,6 +45,8 @@ export default function AirdropToken() {
 	const [loading, setLoading] = useState(false);
 	const [toggleModal, setToggleModal] = useState(false);
 	let toastID;
+	const [csvFile, setCsvFile] = useState();
+	const [csvToggle, setCsvToggle] = useState(false);
 
 	const getTokenData = async (token) => {
 		if (!token) {
@@ -166,6 +170,7 @@ export default function AirdropToken() {
 			});
 
 			document.getElementById("airdropForm").reset();
+			setTokenData("");
 		} catch (error) {
 			console.error("error", error?.shortMessage);
 			toastID
@@ -187,31 +192,48 @@ export default function AirdropToken() {
 		}
 	};
 
-	const handleSubmit = async (e) => {
+	const handleSubmitCSV = async (e) => {
 		e.preventDefault();
+		if (!csvFile) {
+			return toast.error("No CSV Uploaded!");
+		}
 
-		setTx({
-			message: "",
-			status: "",
-		});
+		try {
+			const { addresses, amounts } = await ParseCSV(csvFile, tokenData.decimal);
+			submit(tokenData.address, addresses, amounts);
+		} catch (error) {
+			console.error(error);
+		}
+	};
 
+	const handleSubmitText = (e) => {
+		e.preventDefault();
 		const addresses = [];
 		const amounts = [];
 
 		const formData = new FormData(e.target);
 		const data = Object.fromEntries(formData);
-		const addressList = data.addressList.split("\n");
-		const tokenCA = data.token;
 
 		if (!data) return console.error("No form data found!");
 
+		const addressList = data.addressList.split("\n");
+
+		addressList.forEach((data) => {
+			const [address, amount] = data.replaceAll(" ", "").split(",");
+			addresses.push(address);
+			amounts.push(parseUnits(amount, Number(tokenData.decimal)));
+		});
+
+		submit(tokenData.address, addresses, amounts);
+	};
+
+	const submit = async (tokenCA, addresses, amounts) => {
+		setTx({
+			message: "",
+			status: "",
+		});
+
 		try {
-			addressList.forEach((data) => {
-				const [address, amount] = data.replaceAll(" ", "").split(",");
-				addresses.push(address);
-				amounts.push(parseUnits(amount, Number(tokenData.decimal)));
-			});
-			const res = await Promise.all([]);
 			const percentageFee = await readContract(config, {
 				abi: AirdropABI,
 				address: aidrop_CA_BARTIO,
@@ -240,8 +262,12 @@ export default function AirdropToken() {
 			toast.error(
 				error.shortMessage ? error.shortMessage : "Submission Error!"
 			);
-			console.error("handleSubmit error ---- ", error?.shortMessage);
+			console.error("handleSubmit error ---- ", error);
 		}
+	};
+
+	const handleFileChange = (e) => {
+		setCsvFile(e.target.files[0]);
 	};
 
 	return (
@@ -264,9 +290,9 @@ export default function AirdropToken() {
 				AIRDROP TOKEN
 			</h1>
 			<form
-				onSubmit={handleSubmit}
+				onSubmit={csvToggle ? handleSubmitCSV : handleSubmitText}
 				id="airdropForm"
-				className=" bg-slate-700 max-w-[800px] mx-auto px-4 py-6 lg:p-6 rounded-lg shadow-lg ">
+				className=" bg-slate-700 max-w-[800px] h-[450px] relative  mx-auto px-4 py-6 lg:p-6 rounded-lg shadow-lg ">
 				<div className="mb-4">
 					<label
 						htmlFor="token"
@@ -299,23 +325,62 @@ export default function AirdropToken() {
 					)}
 				</div>
 
-				<div className="mb-4">
+				<div className="">
 					<label
-						htmlFor="addressList"
-						className="block text-sm font-medium text-primary my-1">
-						Address List *
+						htmlFor="csv"
+						className="mr-5 cursor-pointer">
+						<input
+							type="radio"
+							id="csv"
+							value="csv"
+							name="inputFormat"
+							onClick={() => setCsvToggle(true)}
+							className="mr-2 "
+						/>
+						CSV
 					</label>
-					<textarea
-						required
-						id="addressList"
-						name="addressList"
-						placeholder="In each line, input the address and amount seperated by a ' comma ' (,) "
-						className="w-full px-3 py-2 h-[150px] placeholder-input text-black bg-input border border-border rounded-md focus:outline-none focus:ring ring-primary "></textarea>
+					<label
+						htmlFor="text"
+						className=" cursor-pointer">
+						<input
+							id="text"
+							type="radio"
+							value="text"
+							name="inputFormat"
+							onClick={() => setCsvToggle(false)}
+							className="mr-2"
+							defaultChecked
+						/>
+						TEXT
+					</label>
+				</div>
+
+				<div className="mb-4">
+					{csvToggle ? (
+						<CSVUpload
+							csvFile={csvFile}
+							handleFileChange={handleFileChange}
+						/>
+					) : (
+						<>
+							<label
+								htmlFor="addressList"
+								className="block text-sm font-medium text-primary my-1">
+								Address List
+							</label>
+							<textarea
+								required
+								id="addressList"
+								name="addressList"
+								placeholder="In each line, input the address and amount seperated by a ' comma ' (,) "
+								className="w-full px-3 py-2 h-[150px] placeholder-input text-black bg-input border border-border rounded-md focus:outline-none focus:ring ring-primary "></textarea>
+						</>
+					)}
 				</div>
 
 				<button
 					type="submit"
-					className={`bg-slate-400 hover:bg-slate-500 text-primary-foreground hover:bg-primary/80 px-4 py-2 rounded-md mt-5 font-semibold ease-linear duration-150 transition-all active:bg-slate-400 ${
+					className={` absolute bottom-6 left-6 bg-slate-400 hover:bg-slate-500 text-primary-foreground hover:bg-primary/80 px-4 py-2 rounded-md mt-5 font-semibold ease-linear duration-150 transition-all active:bg-slate-400 ${
 						loading && "bg-slate-800 hover:bg-slate-800"
 					}`}
 					disabled={loading ? true : false}>
@@ -325,27 +390,3 @@ export default function AirdropToken() {
 		</div>
 	);
 }
-
-const ModalMainUI = ({ handleFunction, airdropData, decimal }) => {
-	return (
-		<main>
-			<img
-				src="/images/cuteBear.avif"
-				alt="cuteBear"
-				fetchPriority="high"
-				className="mx-auto h-[200px] mb-5 "
-			/>
-			<p className=" my-5">
-				Confirm the Airdrop of{" "}
-				{Number(formatUnits(airdropData.tokenAmount, decimal)).toLocaleString()}{" "}
-				{airdropData.symbol} to {airdropData.addressList.length} addresses
-			</p>
-
-			<button
-				onClick={handleFunction}
-				className=" bg-slate-600 shadow-xl w-[150px] h-[50px] grid place-content-center p-2 mx-auto transition-all duration-150 ease-linear hover:bg-slate-500 ">
-				Airdrop
-			</button>
-		</main>
-	);
-};

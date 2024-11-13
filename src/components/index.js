@@ -18,3 +18,6 @@ export { default as Fund } from "./crowdfundings/Fund";
 export { default as FundCard } from "./crowdfundings/FundCard";
 
 // airdrop exports ------------------------------------------------------------------------
+export { default as CSVUpload } from "./airdrop/CSVUpload";
+export { default as ModalMainUI } from "./airdrop/ModalMainUI";
+export { default as ParseCSV } from "./airdrop/ParseCSV";
