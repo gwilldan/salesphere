@@ -52,7 +52,7 @@ const Funding = ({ params }) => {
 	if (!campaign)
 		return (
 			<div className=" m-[100px] text-center text-2xl font-semibold min-h-dvh">
-				Can't find campaign
+				Can&aps;t find campaign
 			</div>
 		);
 
