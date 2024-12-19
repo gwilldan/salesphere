@@ -17,7 +17,7 @@ const Hero = () => {
 
 	return (
 		<header className=" ">
-			<h2 className=" relative text-[26px] lg:text-[48px] font-semibold leading-[30px] lg:leading-[50px] ">
+			<h2 className=" relative text-[26px] lg:text-[48px] font-semibold leading-[30px] lg:leading-[50px] text-white ">
 				<AnimatePresence mode="wait">
 					<motion.span
 						key={currentIndex}
@@ -25,8 +25,7 @@ const Hero = () => {
 						animate={{ opacity: 1, y: 0 }}
 						exit={{ opacity: 0, y: -20 }}
 						transition={{ duration: 0.5 }}
-						className="inline-block text-white"
-					>
+						className="inline-block text-orange-600">
 						{words[currentIndex]}
 					</motion.span>
 				</AnimatePresence>
@@ -43,15 +42,13 @@ const Hero = () => {
 			<div className=" flex mt-7 items-center gap-4 w-fit mx-auto lg:w-full ">
 				<Link
 					href="/create-token"
-					className=" bg-slate-400 text-slate-900 px-4 py-3 rounded-md lg:hover:bg-slate-500 font-semibold ease-linear transition-colors duration-100 "
-				>
+					className=" bg-slate-400 text-slate-900 px-4 py-3 rounded-md lg:hover:bg-slate-500 font-semibold ease-linear transition-colors duration-100 ">
 					Create Token
 				</Link>
 
 				<a
 					href="#"
-					className="underline hover:text-slate-400 ease-linear transition-colors duration-100"
-				>
+					className="underline hover:text-slate-400 ease-linear transition-colors duration-100">
 					Learn more
 				</a>
 			</div>

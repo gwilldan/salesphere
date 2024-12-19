@@ -1,19 +1,60 @@
-import { fundingData } from "@/components/crowdfundings/data";
+"use client";
+import { useState, useEffect } from "react";
 import { Fund } from "@/components";
+import { readContract } from "@wagmi/core";
+import { config } from "@/web3/config";
+import CrowdfundingABI from "@/web3/ABI/Crowdfunding";
+import { crowdFunding_CA_BARTIO } from "@/constants";
 
 const Funding = ({ params }) => {
-	const camapign = fundingData.find(
-		(funding) => funding.id == params.fundingID
-	);
+	const [campaign, setCampaign] = useState([]);
+	const [loading, setLoading] = useState(true);
 
-	if (!camapign)
+	const [
+		id,
+		owner,
+		title,
+		description,
+		target,
+		deadline,
+		amountCollected,
+		image,
+		donators,
+		donations,
+	] = campaign;
+
+	const dayConvert = 24 * 60 * 60;
+
+	useEffect(() => {
+		const fetchFundings = async () => {
+			try {
+				const result = await readContract(config, {
+					abi: CrowdfundingABI,
+					address: crowdFunding_CA_BARTIO,
+					functionName: "getCampaign",
+					args: [params.fundingID],
+				});
+				setCampaign(result);
+			} catch (error) {
+				console.error("Error fetching fundings:", error);
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		fetchFundings();
+	}, []);
+
+	if (loading) {
+		return <div className=" grid place-content-center h-dvh ">Loading...</div>;
+	}
+
+	if (!campaign)
 		return (
 			<div className=" m-[100px] text-center text-2xl font-semibold min-h-dvh">
-				Error!
+				Can't find campaign
 			</div>
 		);
-
-	const donators = [];
 
 	return (
 		<div className="  pt-5 px-3 mb-5 min-h-dvh lg:mb-[100px] ">
@@ -22,7 +63,7 @@ const Funding = ({ params }) => {
 					<div className="flex-1 flex-col">
 						<div className=" overflow-hidden rounded-xl ">
 							<img
-								src={camapign.image}
+								src={image}
 								fetchPriority="high"
 								alt="campaign"
 								className="w-full h-[410px] object-cover opacity-75 rounded-xl transition-all hover:opacity-90 hover:scale-110 duration-150 ease-linear "
@@ -45,11 +86,13 @@ const Funding = ({ params }) => {
 					<div className="flex md:w-[150px] w-full flex-wrap justify-between gap-[30px]">
 						<CountBox
 							title="Days Left"
-							value={camapign.remainingDays}
+							value={Math.floor(
+								(Number(deadline) - Date.now() / 1000) / dayConvert
+							)}
 						/>
 						<CountBox
-							title={`Raised of ${camapign.totalAmount}`}
-							value={camapign.amountCollected}
+							title={`Raised ${Number(amountCollected).toLocaleString()}`}
+							value={Number(target).toLocaleString()}
 						/>
 						<CountBox
 							title="Total Backers"
@@ -75,7 +118,7 @@ const Funding = ({ params }) => {
 								</div>
 								<div>
 									<h4 className="font-epilogue font-semibold text-[14px] text-white break-all">
-										{camapign.owner}
+										{owner}
 									</h4>
 									<p className="mt-[4px] font-epilogue font-normal text-[12px] text-[#808191]">
 										10 Campaigns
@@ -91,7 +134,7 @@ const Funding = ({ params }) => {
 
 							<div className="mt-[20px]">
 								<p className="font-epilogue font-normal text-[16px] text-[#808191] leading-[26px] text-justify">
-									{camapign.description}
+									{description}
 								</p>
 							</div>
 						</div>
@@ -103,21 +146,21 @@ const Funding = ({ params }) => {
 
 							<div className="mt-[20px] flex flex-col gap-4">
 								{donators.length > 0 ? (
-									donators.map((item, index) => (
+									donators.map((address, index) => (
 										<div
-											key={`${item.donator}-${index}`}
+											key={`${address}-${index}`}
 											className="flex justify-between items-center gap-4">
 											<p className="font-epilogue font-normal text-[16px] text-[#b2b3bd] leading-[26px] break-ll">
-												{index + 1}. {item.donator}
+												{index + 1}. {address}
 											</p>
 											<p className="font-epilogue font-normal text-[16px] text-[#808191] leading-[26px] break-ll">
-												{item.donation}
+												{address}
 											</p>
 										</div>
 									))
 								) : (
 									<p className="font-epilogue font-normal text-[16px] text-[#808191] leading-[26px] text-justify">
-										No donators yet. Be the first one!
+										No donators yet. Be the first!
 									</p>
 								)}
 							</div>
@@ -136,7 +179,7 @@ export default Funding;
 const CountBox = ({ title, value }) => {
 	return (
 		<div className="flex flex-col items-center w-[150px] cursor-default ">
-			<h4 className="font-epilogue font-bold text-[30px] text-white p-3 bg-slate-700 rounded-t-[10px] w-full text-center truncate">
+			<h4 className="font-epilogue font-bold text-[30px] text-white p-3 bg-slate-700 rounded-t-[10px] w-full text-center ">
 				{value}
 			</h4>
 			<p className="font-epilogue font-normal text-[16px] text-[#cecfda] bg-slate-600 px-3 py-2 w-full rouned-b-[10px] text-center shadow-xl">

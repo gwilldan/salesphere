@@ -8,7 +8,7 @@ import Link from "next/link";
 
 const SideBar = () => {
 	return (
-		<aside className=" hidden lg:block bg-slate-900 border-r-[0.5px] border-slate-700 h-full w-[80px]">
+		<aside className=" hidden lg:block bg-slate-900 border-r-[0.5px] border-slate-700 h-full w-[80px] text-white">
 			<Link
 				href="/"
 				className=" size-[80px] border-r-[0.5px] border-b-[0.5px] border-slate-700 grid place-content-center">
@@ -37,6 +37,11 @@ export default SideBar;
 
 export const pages = [
 	{
+		name: "Crowdfundings",
+		icon: <BiSolidDonateHeart />,
+		href: "/crowdfundings",
+	},
+	{
 		name: "Create Token",
 		icon: <FiPlusCircle />,
 		href: "/create-token",
@@ -45,11 +50,6 @@ export const pages = [
 		name: "Airdrop Token",
 		icon: <TbDroplets />,
 		href: "/airdrop-token",
-	},
-	{
-		name: "Crowdfundings",
-		icon: <BiSolidDonateHeart />,
-		href: "/crowdfundings",
 	},
 	{
 		name: "Create Sale",

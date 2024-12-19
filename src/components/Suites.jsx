@@ -1,7 +1,7 @@
 const Suites = () => {
 	return (
 		<section className=" max-w-[1200px] mx-auto">
-			<h2 className=" text-[26px] font-semibold text-center ">
+			<h2 className=" text-[26px] font-semibold text-center text-orange-600 ">
 				Our product suites
 			</h2>
 			<p className="text-slate-400 text-center my-4 max-w-[700px] mx-auto">
@@ -14,7 +14,7 @@ const Suites = () => {
 				{suiteCards.map((suite) => (
 					<figcaption
 						key={suite.title}
-						className=" bg-slate-900 rounded-lg p-6 text-center max-w-[500px] shrink-0 lg:hover:outline outline-slate-400 transition-all ease-linear duration-150 cursor-default">
+						className=" bg-slate-900 shadow-md rounded-lg p-6 text-center max-w-[500px] shrink-0 lg:hover:outline outline-slate-400 transition-all ease-linear duration-150 cursor-default">
 						{/* <img src="" alt="" className="size-[64px] rounded-full " /> */}
 						<div className="size-[64px] rounded-full bg-slate-600 mx-auto mb-7 "></div>
 						<h2 className=" text-[18px] font-semibold my-2">{suite.title}</h2>

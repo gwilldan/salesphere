@@ -8,9 +8,11 @@ import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
 
 const queryClient = new QueryClient();
 
-export default function Web3Context({ children }) {
+export default function Web3Context({ children, initialState }) {
 	return (
-		<WagmiProvider config={config}>
+		<WagmiProvider
+			config={config}
+			initialState={initialState}>
 			<QueryClientProvider client={queryClient}>
 				<RainbowKitProvider>
 					<Web3Contexts>{children}</Web3Contexts>

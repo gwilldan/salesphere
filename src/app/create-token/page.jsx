@@ -4,7 +4,7 @@ import { useAccount } from "wagmi";
 import { config } from "@/web3/config";
 import { writeContract, waitForTransactionReceipt } from "@wagmi/core";
 import FactoryABI from "@/web3/ABI/FactoryABI";
-import { tokenFactory_CA_BARTIO } from "@/constants";
+import { tokenFactory_CA_BARTIO, tokenFactory_CA_SEPOLIA } from "@/constants";
 import { Modal, ModalChildren, Loading } from "@/components";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { toast } from "react-toastify";

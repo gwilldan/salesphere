@@ -10,7 +10,7 @@ const Nav = () => {
 	const [toggle, setToggle] = useState(false);
 
 	return (
-		<nav className=" p-4 bg-slate-900 z-10 flex items-center justify-between border-b-[0.5px] border-slate-700 ease-linear duration-150 transition-all lg:h-[80px] w-full shrink-0 shadow-lg ">
+		<nav className=" p-4 bg-slate-900 z-10 flex items-center justify-between border-b-[0.5px] border-slate-700 ease-linear duration-150 transition-all lg:h-[80px] w-full shrink-0 shadow-lg text-white ">
 			<div>
 				<Link
 					href="/"
@@ -21,7 +21,6 @@ const Nav = () => {
 
 			<section className="flex items-center gap-3 ">
 				<ConnectButton />
-
 				<figcaption className=" block lg:hidden">
 					<Hamburger
 						toggled={toggle}

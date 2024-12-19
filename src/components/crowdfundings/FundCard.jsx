@@ -1,9 +1,11 @@
 import Link from "next/link";
 
 const FundCard = ({ funding }) => {
+	const dayConvert = 24 * 60 * 60;
+
 	return (
 		<Link
-			href={`/crowdfundings/${funding.id}`}
+			href={`/crowdfundings/${funding._id}`}
 			className="rounded-[15px] bg-slate-700 cursor-pointer group hover:bg-slate-600 ease-linear duration-150 transition-all ">
 			<div className="h-[158px] w-full overflow-hidden bg-slate-900 rounded-t-[15px]">
 				<img
@@ -15,16 +17,9 @@ const FundCard = ({ funding }) => {
 			</div>
 
 			<div className="flex flex-col p-4">
-				<div className="flex flex-row items-center mb-[18px]">
-					<img
-						src="/type.svg"
-						alt="tag"
-						className="w-[17px] h-[17px] object-contain"
-					/>
-					<p className="ml-[12px] mt-[2px] font-epilogue font-medium text-[12px] text-[#808191]">
-						Education
-					</p>
-				</div>
+				<p className="mb-[2px] font-epilogue font-medium text-[12px] text-[#808191]">
+					🟢 Active
+				</p>
 
 				<div className="block">
 					<h3 className="font-epilogue font-semibold text-[16px] text-white text-left leading-[26px] truncate">
@@ -38,15 +33,18 @@ const FundCard = ({ funding }) => {
 				<div className="flex justify-between flex-wrap mt-[15px] gap-2">
 					<div className="flex flex-col">
 						<h4 className="font-epilogue font-semibold text-[14px] text-[#b2b3bd] leading-[22px]">
-							{funding.amountCollected}
+							{Number(funding.target).toLocaleString()} USD
 						</h4>
 						<p className="mt-[3px] font-epilogue font-normal text-[12px] leading-[18px] text-[#808191] sm:max-w-[120px] truncate">
-							Raised of {funding.totalAmount}
+							Raised {funding.amountCollected ? funding.amountCollected : "0"}{" "}
+							USD
 						</p>
 					</div>
 					<div className="flex flex-col">
 						<h4 className="font-epilogue font-semibold text-[14px] text-[#b2b3bd] leading-[22px]">
-							{funding.remainingDays}
+							{Math.floor(
+								(Number(funding.deadline) - Date.now() / 1000) / dayConvert
+							)}
 						</h4>
 						<p className="mt-[3px] font-epilogue font-normal text-[12px] leading-[18px] text-[#808191] sm:max-w-[120px] truncate">
 							Days Left
@@ -63,7 +61,10 @@ const FundCard = ({ funding }) => {
 						/>
 					</div>
 					<p className="flex-1 font-epilogue font-normal text-[12px] text-[#808191] truncate">
-						by <span className="text-[#b2b3bd]">{funding.owner}</span>
+						by{" "}
+						<span className="text-[#b2b3bd]">
+							{funding.owner.slice(0, 4)} ... {funding.owner.slice(-6)}{" "}
+						</span>
 					</p>
 				</div>
 			</div>

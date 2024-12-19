@@ -2,8 +2,17 @@
 import { useState } from "react";
 import { Loader } from "@/components";
 import FormField from "@/components/crowdfundings/FormField";
+import { useAccount } from "wagmi";
+import { toast } from "react-toastify";
+import Link from "next/link";
+import { waitForTransactionReceipt, writeContract } from "@wagmi/core";
+import { config } from "@/web3/config";
+import CrowdfundingABI from "@/web3/ABI/Crowdfunding";
+import { crowdFunding_CA_BARTIO } from "@/constants";
 
 const CreateCampaign = () => {
+	const { address } = useAccount();
+
 	const [form, setForm] = useState({
 		name: "",
 		title: "",
@@ -19,22 +28,56 @@ const CreateCampaign = () => {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		console.log("FORM VALUES", form);
 
-		// checkIfImage(form.image, async (exists) => {
-		// 	if (exists) {
-		// 		setIsLoading(true);
-		// 		await createCampaign({
-		// 			...form,
-		// 			target: ethers.utils.parseUnits(form.target, 18),
-		// 		});
-		// 		setIsLoading(false);
-		// 		navigate("/");
-		// 	} else {
-		// 		alert("Provide valid image URL");
-		// 		setForm({ ...form, image: "" });
-		// 	}
-		// });
+		const owner = address;
+		const title = form.title;
+		const description = form.description;
+		const target = Number(form.target);
+		const deadline = Math.floor(new Date(form.deadline) / 1000);
+		const image = form.image;
+
+		try {
+			const result = await toast.promise(
+				async () => {
+					const res = await writeContract(config, {
+						abi: CrowdfundingABI,
+						address: crowdFunding_CA_BARTIO,
+						functionName: "createCampaign",
+						args: [owner, title, description, target, deadline, image],
+					});
+					const txRes = await waitForTransactionReceipt(config, {
+						hash: res,
+					});
+					return txRes;
+				},
+				{
+					error: {
+						render: "Error!",
+					},
+					pending: {
+						render: "Creating Campaign ... ",
+					},
+					success: {
+						render: () => {
+							return (
+								<div>
+									<p>Campain created successfully!</p>
+									<Link
+										className="underline "
+										href={`../crowdfundings`}>
+										See your campaign
+									</Link>
+								</div>
+							);
+						},
+					},
+				}
+			);
+
+			console.log("result", result);
+		} catch (error) {
+			console.error("error", error);
+		}
 	};
 
 	return (
