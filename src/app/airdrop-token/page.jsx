@@ -5,7 +5,7 @@ import { config } from "@/web3/config";
 import { readContract, waitForTransactionReceipt } from "@wagmi/core";
 import { useAccount } from "wagmi";
 import { formatUnits, parseUnits } from "viem";
-import { aidrop_CA_BARTIO } from "@/constants";
+import { aidrop_CA } from "@/constants";
 import {
 	checkAllowance,
 	approve,
@@ -85,7 +85,7 @@ export default function AirdropToken() {
 			//get fee information
 			const [, totalAmountWithFees] = await readContract(config, {
 				abi: AirdropABI,
-				address: aidrop_CA_BARTIO,
+				address: aidrop_CA,
 				functionName: "calculateDistributeTokensFees",
 				args: [airdropData.amountList],
 			});
@@ -117,12 +117,12 @@ export default function AirdropToken() {
 			const allowance = await checkAllowance(
 				address,
 				tokenData.address,
-				aidrop_CA_BARTIO
+				aidrop_CA
 			);
 			if (!allowance || allowance < totalAmountWithFees) {
 				const approval = await approve(
 					tokenData.address,
-					aidrop_CA_BARTIO,
+					aidrop_CA,
 					totalAmountWithFees
 				);
 
@@ -138,7 +138,7 @@ export default function AirdropToken() {
 				});
 			}
 			const airdropTx = await airdrop(
-				aidrop_CA_BARTIO,
+				aidrop_CA,
 				tokenData.address,
 				airdropData.addressList,
 				airdropData.amountList
@@ -236,12 +236,12 @@ export default function AirdropToken() {
 		try {
 			const percentageFee = await readContract(config, {
 				abi: AirdropABI,
-				address: aidrop_CA_BARTIO,
+				address: aidrop_CA,
 				functionName: "percentageFee",
 			});
 			const [feeAmount, totalAmountWithFees] = await readContract(config, {
 				abi: AirdropABI,
-				address: aidrop_CA_BARTIO,
+				address: aidrop_CA,
 				functionName: "calculateDistributeTokensFees",
 				args: [amounts],
 			});

@@ -1,14 +1,21 @@
 import { Playball } from "next/font/google";
+import Image from "next/image";
 
 const playBall = Playball({ subsets: ["latin"], weight: "400" });
 
 const Building = () => {
 	return (
 		<main className=" grid place-content-center">
-			<img
-				src="/building.svg"
-				className=" my-3 h-[400px] "
-			/>
+			<div className=" my-3 h-[400px] relative">
+				<Image
+					src="/building.jpeg"
+					className=""
+					alt="building"
+					fill
+					loading="eager"
+				/>
+			</div>
+
 			<p className={`${playBall.className} text-[40px] mx-auto `}>
 				Still building, sers!
 			</p>

@@ -4,8 +4,8 @@ const ModalMainUI = ({ handleFunction, airdropData, decimal }) => {
 	return (
 		<main>
 			<img
-				src="/images/cuteBear.avif"
-				alt="cuteBear"
+				src="/images/cuteChog.jpg"
+				alt="cuteChog"
 				fetchPriority="high"
 				className="mx-auto h-[200px] mb-5 "
 			/>

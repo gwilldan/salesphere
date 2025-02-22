@@ -12,8 +12,8 @@ const ModalChildren = ({ ModalMainUI, tx, txHash }) => {
 			{tx.status === "completed" && (
 				<main>
 					<img
-						src="/images/dancingBear.gif"
-						alt="cuteBear"
+						src="/images/dancingChog.gif"
+						alt="dancingChog"
 						className=" size-[200px] mx-auto rounded-full mb-5 "
 					/>
 					<div>
@@ -33,8 +33,8 @@ const ModalChildren = ({ ModalMainUI, tx, txHash }) => {
 			{tx.status === "awaiting" && (
 				<main>
 					<img
-						src="/images/cuteBear.avif"
-						alt="cutebear"
+						src="/images/cuteChog.jpg"
+						alt="cuteChog"
 						fetchPriority="high"
 						className="mx-auto h-[200px] mb-5 "
 					/>

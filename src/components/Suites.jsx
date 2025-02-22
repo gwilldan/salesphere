@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 const Suites = () => {
 	return (
 		<section className=" max-w-[1200px] mx-auto">
@@ -15,8 +17,14 @@ const Suites = () => {
 					<figcaption
 						key={suite.title}
 						className=" bg-slate-900 shadow-md rounded-lg p-6 text-center max-w-[500px] shrink-0 lg:hover:outline outline-slate-400 transition-all ease-linear duration-150 cursor-default">
-						{/* <img src="" alt="" className="size-[64px] rounded-full " /> */}
-						<div className="size-[64px] rounded-full bg-slate-600 mx-auto mb-7 "></div>
+						<div className="size-[64px] rounded-full bg-slate-600 mx-auto mb-7 relative overflow-hidden ">
+							<Image
+								src="/images/mondalak.jpeg"
+								alt="mondalak"
+								fill
+								style={{ objectFit: "cover" }}
+							/>
+						</div>
 						<h2 className=" text-[18px] font-semibold my-2">{suite.title}</h2>
 						<p className=" text-[14px] text-slate-400 ">{suite.description}</p>
 					</figcaption>
@@ -50,8 +58,8 @@ const suiteCards = [
 			"Airdrop your tokens to multiple addresses or distribute tokens to sale participants.",
 	},
 	{
-		title: "Crowdfunding Campaigns",
-		description: "Participate in crowdfunding and easily request donations.",
+		title: "Lock Tokens",
+		description: "Handle token locks and other things.",
 	},
 	{
 		title: "Join sales",

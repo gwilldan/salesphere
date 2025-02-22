@@ -4,7 +4,7 @@ import { useAccount } from "wagmi";
 import { config } from "@/web3/config";
 import { writeContract, waitForTransactionReceipt } from "@wagmi/core";
 import FactoryABI from "@/web3/ABI/FactoryABI";
-import { tokenFactory_CA_BARTIO, tokenFactory_CA_SEPOLIA } from "@/constants";
+import { tokenFactory_CA } from "@/constants";
 import { Modal, ModalChildren, Loading } from "@/components";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { toast } from "react-toastify";
@@ -55,7 +55,7 @@ export default function CreateToken() {
 		try {
 			const tx = await writeContract(config, {
 				abi: FactoryABI,
-				address: tokenFactory_CA_BARTIO,
+				address: tokenFactory_CA,
 				functionName: "createToken",
 				args: [tokenData.name, tokenData.symbol, BigInt(tokenData.supply)],
 			});
@@ -214,8 +214,8 @@ const ModalMainUI = ({ tokenData, handleFunction }) => {
 	return (
 		<main>
 			<img
-				src="/images/cuteBear.avif"
-				alt="cutebear"
+				src="/images/cuteChog.jpg"
+				alt="cuteChog"
 				fetchPriority="high"
 				className="mx-auto h-[200px] "
 			/>

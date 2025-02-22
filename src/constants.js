@@ -1,13 +1,6 @@
-export const aidrop_CA_SEPOLIA = "0xe596d276871dc9c3b571a14b9e92f27f9e5f1df7";
-export const tokenFactory_CA_SEPOLIA =
-	"0x625C0d68B6AB598F03A96c3121a044AaaED9Fd90";
-
-export const aidrop_CA_BARTIO = "0xD7e1FE53E78f99974734f9811D04406A95dB12EE";
-export const tokenFactory_CA_BARTIO =
-	"0x1e1250359893eD83519Dd02a733784F84c6135e7";
-export const crowdFunding_CA_BARTIO =
-	"0xc9991cb28E29568296355761c820d40425D9d986";
+export const aidrop_CA = "0xefe7c1c0468e755465597a25f90b37f573649822";
+export const tokenFactory_CA = "0x8a42Ac2577E20c8647581FA355C3213dD35FEbcc";
 
 // other CA
-export const honey_CA_BARTIO = "0x0E4aaF1351de4c0264C5c7056Ef3777b41BD8e03";
-export const usdc_CA_BARTIO = "0xd6D83aF58a19Cd14eF3CF6fe848C9A4d21e5727c";
+export const honey_CA = "0x0E4aaF1351de4c0264C5c7056Ef3777b41BD8e03";
+export const usdc_CA = "0xd6D83aF58a19Cd14eF3CF6fe848C9A4d21e5727c";

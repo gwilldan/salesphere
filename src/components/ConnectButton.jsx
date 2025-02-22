@@ -3,7 +3,9 @@ import { Web3Context } from "@/web3/web3Contexts";
 import { useAccount } from "wagmi";
 
 const ConnectButton = () => {
-	const { address, handleConnect, isConnected } = useContext(Web3Context);
+	const { address, handleConnect, isConnected } = useContext(
+		Web3Context && Web3Context
+	);
 	const { connector } = useAccount();
 
 	return (

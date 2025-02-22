@@ -37,11 +37,6 @@ export default SideBar;
 
 export const pages = [
 	{
-		name: "Crowdfundings",
-		icon: <BiSolidDonateHeart />,
-		href: "/crowdfundings",
-	},
-	{
 		name: "Create Token",
 		icon: <FiPlusCircle />,
 		href: "/create-token",
