@@ -200,6 +200,13 @@ export default function AirdropToken() {
 
 		try {
 			const { addresses, amounts } = await ParseCSV(csvFile, tokenData.decimal);
+
+			if (addresses.length > 1_000 || amounts.length > 1_000) {
+				console.error("Address list above 1,000");
+				toast.error("Address list above 1,000");
+				return;
+			}
+
 			submit(tokenData.address, addresses, amounts);
 		} catch (error) {
 			console.error(error);
@@ -223,6 +230,12 @@ export default function AirdropToken() {
 			addresses.push(address);
 			amounts.push(parseUnits(amount, Number(tokenData.decimal)));
 		});
+
+		if (addresses.length > 1_000 || amounts.length > 1_000) {
+			console.error("Address list above 1,000");
+			toast.error("Address list above 1,000");
+			return;
+		}
 
 		submit(tokenData.address, addresses, amounts);
 	};
@@ -366,7 +379,7 @@ export default function AirdropToken() {
 							<label
 								htmlFor="addressList"
 								className="block text-sm font-medium text-primary my-1">
-								Address List
+								Address List - not greater than 1,000
 							</label>
 							<textarea
 								required
