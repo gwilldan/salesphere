@@ -1,24 +1,43 @@
 import { Loading } from ".";
+import addToMetamask from "@/web3/addToMetamask";
 
-const ModalChildren = ({ ModalMainUI, tx, txHash }) => {
+const ModalChildren = ({ ModalMainUI, tx, txHash, token }) => {
 	console.log("tx... ", tx);
 
 	return (
-		<div className="text-center ">
+		<div className="text-center  ">
 			{!tx.status && ModalMainUI}
 
 			{tx.status === "rejected" && <div>{tx.message} </div>}
 
 			{tx.status === "completed" && (
-				<main>
+				<main className=" ">
 					<img
 						src="/images/dancingChog.gif"
 						alt="dancingChog"
 						className=" size-[200px] mx-auto rounded-full mb-5 "
 					/>
-					<div>
-						<h2 className=" my-3">{tx.message} </h2>
-						<p>{txHash}</p>
+					<div className="">
+						<h2 className=" my-1">{tx.message} </h2>
+						<p className="max-w-[350px] mx-auto flex flex-wrap overflow-hidden">
+							<a
+								className=" underline text-blue-300 hover:text-blue-100 "
+								target="_blank"
+								href={`https://testnet.monadexplorer.com/tx/${txHash}`}
+								alt="txHash">{`https://testnet.monadexplorer.com/tx/${txHash}`}</a>
+						</p>
+
+						{token && (
+							<div className="pt-5">
+								<p>Token address </p>
+								<p>{token}</p>
+								<button
+									onClick={() => addToMetamask(token)}
+									className=" border shadow-sm my-4 px-2 py-1 bg-slate-300 text-black ">
+									Add Token to metamask{" "}
+								</button>
+							</div>
+						)}
 					</div>
 				</main>
 			)}

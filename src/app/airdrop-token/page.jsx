@@ -40,6 +40,7 @@ export default function AirdropToken() {
 		status: "",
 		message: "",
 	});
+	const [txHash, setTxHash] = useState("");
 	const { address, chainId, isConnected } = useAccount();
 
 	const [loading, setLoading] = useState(false);
@@ -157,6 +158,8 @@ export default function AirdropToken() {
 			const airdropReciept = await waitForTransactionReceipt(config, {
 				hash: airdropTx,
 			});
+
+			setTxHash(transactionReceipt?.transactionHash);
 
 			toast.update(toastID, {
 				render: "Successfully airdropped!",
@@ -288,6 +291,7 @@ export default function AirdropToken() {
 			{toggleModal && (
 				<Modal setToggleModal={setToggleModal}>
 					<ModalChildren
+						txHash={txHash}
 						ModalMainUI={
 							<ModalMainUI
 								handleFunction={handleAirdrop}

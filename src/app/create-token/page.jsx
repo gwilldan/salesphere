@@ -20,6 +20,7 @@ export default function CreateToken() {
 	});
 	const [toggleModal, setToggleModal] = useState(false);
 	const [txHash, setTxHash] = useState("");
+	const [token, setToken] = useState("");
 	const [tokenData, setTokenData] = useState({
 		name: "",
 		symbol: "symbol",
@@ -80,7 +81,8 @@ export default function CreateToken() {
 				status: "completed",
 				message: `Minted Successfully `,
 			});
-			setTxHash(transactionReceipt?.hash);
+			setTxHash(transactionReceipt?.transactionHash);
+			setToken(transactionReceipt.logs[3].address);
 			console.log(transactionReceipt);
 			document.getElementById("myForm").reset();
 			setTokenData({
@@ -114,6 +116,8 @@ export default function CreateToken() {
 				<Modal setToggleModal={setToggleModal}>
 					<ModalChildren
 						tx={tx}
+						token={token}
+						txHash={txHash}
 						ModalMainUI={
 							<ModalMainUI
 								handleFunction={handleMint}
