@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Loading } from ".";
 import addToMetamask from "@/web3/addToMetamask";
 
@@ -12,11 +13,16 @@ const ModalChildren = ({ ModalMainUI, tx, txHash, token }) => {
 
 			{tx.status === "completed" && (
 				<main className=" ">
-					<img
-						src="/images/dancingChog.gif"
-						alt="dancingChog"
-						className=" size-[200px] mx-auto rounded-full mb-5 "
-					/>
+					<div className="size-[200px] mx-auto rounded-full mb-5 relative">
+						<Image
+							src="/images/dancingChog.gif"
+							alt="dancingChog"
+							fill
+							priority
+							fetchPriority="high"
+							loading="eager"
+						/>
+					</div>
 					<div className="">
 						<h2 className=" my-1">{tx.message} </h2>
 						<p className="max-w-[350px] mx-auto flex flex-wrap overflow-hidden">

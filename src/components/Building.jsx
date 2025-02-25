@@ -13,6 +13,8 @@ const Building = () => {
 					alt="building"
 					fill
 					loading="eager"
+					fetchPriority="high"
+					priority
 				/>
 			</div>
 

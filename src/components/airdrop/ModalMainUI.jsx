@@ -1,14 +1,19 @@
+import Image from "next/image";
 import { formatUnits } from "viem";
 
 const ModalMainUI = ({ handleFunction, airdropData, decimal }) => {
 	return (
 		<main>
-			<img
-				src="/images/cuteChog.jpg"
-				alt="cuteChog"
-				fetchPriority="high"
-				className="mx-auto h-[200px] mb-5 "
-			/>
+			<div className="mx-auto size-[200px] rounded-full overflow-hidden mb-5 relative">
+				<Image
+					src="/images/cuteChog.jpg"
+					alt="cuteChog"
+					fetchPriority="high"
+					loading="eager"
+					fill
+					priority
+				/>
+			</div>
 			<p className=" my-5">
 				Confirm the Airdrop of{" "}
 				{Number(formatUnits(airdropData.tokenAmount, decimal)).toLocaleString()}{" "}

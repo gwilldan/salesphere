@@ -4,7 +4,7 @@ import AirdropABI from "@/web3/ABI/AirdropABI";
 import { config } from "@/web3/config";
 import { readContract, waitForTransactionReceipt } from "@wagmi/core";
 import { useAccount } from "wagmi";
-import { formatUnits, parseUnits } from "viem";
+import { formatUnits, isAddress, parseUnits } from "viem";
 import { aidrop_CA } from "@/constants";
 import {
 	checkAllowance,
@@ -24,6 +24,7 @@ import {
 	ParseCSV,
 } from "@/components";
 import { toast } from "react-toastify";
+import MultiWalletInput from "./MultiWalletInput";
 
 export default function AirdropToken() {
 	const [tokenData, setTokenData] = useState();
@@ -42,10 +43,11 @@ export default function AirdropToken() {
 	});
 	const [txHash, setTxHash] = useState("");
 	const { address, chainId, isConnected } = useAccount();
+	const [lines, setLines] = useState([""]);
 
 	const [loading, setLoading] = useState(false);
 	const [toggleModal, setToggleModal] = useState(false);
-	let toastID;
+	let toastID = 0;
 	const [csvFile, setCsvFile] = useState();
 	const [csvToggle, setCsvToggle] = useState(false);
 
@@ -80,7 +82,6 @@ export default function AirdropToken() {
 	};
 
 	const handleAirdrop = async () => {
-		setLoading(true);
 		setTx({ status: "awaiting", message: `Waiting for your confirmation...` });
 		try {
 			//get fee information
@@ -145,6 +146,8 @@ export default function AirdropToken() {
 				airdropData.amountList
 			);
 
+			console.log("waiting to confim...", airdropTx);
+
 			setTx({ status: "pending", message: `Airdropping tokens to users ` });
 			toastID
 				? toast.update(toastID, {
@@ -159,23 +162,27 @@ export default function AirdropToken() {
 				hash: airdropTx,
 			});
 
-			setTxHash(transactionReceipt?.transactionHash);
+			console.log("airdrop receipt", airdropReciept);
 
-			toast.update(toastID, {
-				render: "Successfully airdropped!",
-				autoClose: 5000,
-				type: "success",
-				isLoading: false,
-			});
+			setTxHash(airdropReciept?.transactionHash);
+			console.log("txHash...", txHash);
+
+			toastID &&
+				toast.update(toastID, {
+					render: "Successfully airdropped!",
+					autoClose: 5000,
+					type: "success",
+					isLoading: false,
+				});
 			setTx({
 				status: "completed",
 				message: `Airdrop successful`,
 			});
 
-			document.getElementById("airdropForm").reset();
 			setTokenData("");
+			setCsvFile();
 		} catch (error) {
-			console.error("error", error?.shortMessage);
+			console.error("error", error);
 			toastID
 				? toast.update(toastID, {
 						render: error.shortmessage,
@@ -192,12 +199,21 @@ export default function AirdropToken() {
 			});
 		} finally {
 			setLoading(false);
+			setCsvFile();
 		}
 	};
 
-	const handleSubmitCSV = async (e) => {
-		e.preventDefault();
+	const handleSubmitCSV = async () => {
+		setLoading(true);
+
+		if (!tokenData || !tokenData.address) {
+			toast.error("Pls, Input contract address", { autoClose: 2000 });
+			setLoading(false);
+			return;
+		}
+
 		if (!csvFile) {
+			setLoading(false);
 			return toast.error("No CSV Uploaded!");
 		}
 
@@ -207,40 +223,65 @@ export default function AirdropToken() {
 			if (addresses.length > 1_000 || amounts.length > 1_000) {
 				console.error("Address list above 1,000");
 				toast.error("Address list above 1,000");
+				setLoading(false);
 				return;
 			}
 
 			submit(tokenData.address, addresses, amounts);
 		} catch (error) {
 			console.error(error);
+			setLoading(false);
 		}
 	};
 
-	const handleSubmitText = (e) => {
-		e.preventDefault();
-		const addresses = [];
-		const amounts = [];
+	const handleSubmitText = async () => {
+		try {
+			setLoading(true);
 
-		const formData = new FormData(e.target);
-		const data = Object.fromEntries(formData);
+			const addresses = [];
+			const amounts = [];
 
-		if (!data) return console.error("No form data found!");
+			if (!tokenData || !tokenData.address) {
+				toast.error("Input contract address", { autoClose: 2000 });
+				setLoading(false);
+				return;
+			}
 
-		const addressList = data.addressList.split("\n");
+			await new Promise((res, rej) => {
+				lines.forEach((data) => {
+					const [address, amount] = data.replaceAll(" ", "").split(",");
 
-		addressList.forEach((data) => {
-			const [address, amount] = data.replaceAll(" ", "").split(",");
-			addresses.push(address);
-			amounts.push(parseUnits(amount, Number(tokenData.decimal)));
-		});
+					if (!address || !amount) {
+						toast.error("Address and Amount Cannot be empty ");
+						setLoading(false);
+						rej("Address and Amount Cannot be empty ");
+						return;
+					}
 
-		if (addresses.length > 1_000 || amounts.length > 1_000) {
-			console.error("Address list above 1,000");
-			toast.error("Address list above 1,000");
-			return;
+					if (!isAddress(address) || isNaN(amount)) {
+						toast.error("Input valid Address and Amount ");
+						setLoading(false);
+						rej("Input valid Address and Amount ");
+						return;
+					}
+
+					addresses.push(address);
+					amounts.push(parseUnits(amount, Number(tokenData.decimal)));
+					res();
+				});
+			});
+
+			if (addresses.length > 200 || amounts.length > 200) {
+				console.error("Address list above 1,000");
+				toast.error("Address list above 1,000");
+				setLoading(false);
+				return;
+			}
+
+			submit(tokenData.address, addresses, amounts);
+		} catch (error) {
+			console.error("error from ");
 		}
-
-		submit(tokenData.address, addresses, amounts);
 	};
 
 	const submit = async (tokenCA, addresses, amounts) => {
@@ -248,6 +289,10 @@ export default function AirdropToken() {
 			message: "",
 			status: "",
 		});
+
+		console.log("token Address....", tokenCA);
+		console.log("addresses....", addresses);
+		console.log("addresses....", amounts);
 
 		try {
 			const percentageFee = await readContract(config, {
@@ -291,6 +336,7 @@ export default function AirdropToken() {
 			{toggleModal && (
 				<Modal setToggleModal={setToggleModal}>
 					<ModalChildren
+						token={""}
 						txHash={txHash}
 						ModalMainUI={
 							<ModalMainUI
@@ -306,10 +352,9 @@ export default function AirdropToken() {
 			<h1 className=" text-[32px] font-bold text-center mb-10">
 				AIRDROP TOKEN
 			</h1>
-			<form
-				onSubmit={csvToggle ? handleSubmitCSV : handleSubmitText}
+			<div
 				id="airdropForm"
-				className=" bg-slate-700 max-w-[800px] h-[450px] relative  mx-auto px-4 py-6 lg:p-6 rounded-lg shadow-lg ">
+				className=" bg-slate-700 max-w-[800px] h-[550px] relative  mx-auto px-4 py-6 lg:p-6 rounded-lg shadow-lg ">
 				<div className="mb-4">
 					<label
 						htmlFor="token"
@@ -383,27 +428,26 @@ export default function AirdropToken() {
 							<label
 								htmlFor="addressList"
 								className="block text-sm font-medium text-primary my-1">
-								Address List - not greater than 1,000
+								Address List - not greater than 200. Use CSV for addresses up to
+								1,000
 							</label>
-							<textarea
-								required
-								id="addressList"
-								name="addressList"
-								placeholder="In each line, input the address and amount seperated by a ' comma ' (,) "
-								className="w-full px-3 py-2 h-[150px] placeholder-input text-black bg-input border border-border rounded-md focus:outline-none focus:ring ring-primary "></textarea>
+							<MultiWalletInput
+								lines={lines}
+								setLines={setLines}
+							/>
 						</>
 					)}
 				</div>
 
 				<button
-					type="submit"
+					onClick={csvToggle ? handleSubmitCSV : handleSubmitText}
 					className={` absolute bottom-6 left-6 bg-slate-400 hover:bg-slate-500 text-primary-foreground hover:bg-primary/80 px-4 py-2 rounded-md mt-5 font-semibold ease-linear duration-150 transition-all active:bg-slate-400 ${
 						loading && "bg-slate-800 hover:bg-slate-800"
 					}`}
 					disabled={loading ? true : false}>
 					{loading ? <Loading /> : "Aidrop"}
 				</button>
-			</form>
+			</div>
 		</div>
 	);
 }

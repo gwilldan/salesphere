@@ -1,5 +1,5 @@
 import { createContext, useEffect } from "react";
-export const Web3Context = createContext();
+
 import {
 	useAccountModal,
 	useConnectModal,
@@ -8,6 +8,8 @@ import {
 
 import { useAccount, useSwitchChain } from "wagmi";
 import { config } from "./config";
+
+export const Web3Context = createContext(null);
 
 const Web3Contexts = ({ children }) => {
 	const { isConnected, address, connector, chainId } = useAccount();
